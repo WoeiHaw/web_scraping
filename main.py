@@ -44,6 +44,16 @@ def my_job():
 
 
 def scrape_all():
+    scrape_all_grocerries()
+
+
+    Sg_room()
+
+    scrape_all_job()
+
+    scrape_all_house()
+
+def scrape_all_grocerries():
     Coffee()
     Dettol()
     Shapoo()
@@ -52,11 +62,13 @@ def scrape_all():
     Shoes("my", "../../skechers_shoes_MY.csv")
     Shoes("sg", "../../skechers_shoes_SG.csv")
 
-    Sg_room()
 
+def scrape_all_job():
     Job_info("../../Singapore Job.csv", "sg")
-    Job_info("../../Malaysia Job.csv", "my")
+    Job_info("../../Singapore Job.csv", "sg")
 
+
+def scrape_all_house():
     House_price("../../House Price kl.csv", "kuala+lumpur")
     House_price("../../House Price JB.csv", "johor+bahru")
 
@@ -129,11 +141,15 @@ def groceries_menu():
                                       command=skechers_shoes_sg)
     button_skechers_shoes_sg.grid(row=7, column=1, pady=10, columnspan=2)
 
+    button_scrape_all = Button(text="Scrape All", font=(FONT_NAME, 20), bg=COLOR2,
+                               command=scrape_all_grocerries)
+    button_scrape_all.grid(row=8, column=1, pady=10, columnspan=2)
+
     button_exit_grocerries = Button(text="Exit Programme", font=(FONT_NAME, 20), bg=COLOR3, command=window.destroy)
-    button_exit_grocerries.grid(row=8, column=0, padx=20, pady=20, columnspan=2)
+    button_exit_grocerries.grid(row=9, column=0, padx=20, pady=20, columnspan=2)
 
     button_main_menu = Button(text="Main Menu", font=(FONT_NAME, 20), bg=COLOR3, command=go_main)
-    button_main_menu.grid(row=8, column=2, padx=20, pady=20, columnspan=2)
+    button_main_menu.grid(row=9, column=2, padx=20, pady=20, columnspan=2)
 
 
 def data_science_job_gui():
@@ -149,11 +165,15 @@ def data_science_job_gui():
     button_sg_job = Button(text="Data Science Job(Malaysia)", font=(FONT_NAME, 20), bg=COLOR2, command=my_job)
     button_sg_job.grid(row=2, column=1, pady=10, columnspan=2)
 
+    button_scrape_all = Button(text="Scrape All", font=(FONT_NAME, 20), bg=COLOR2,
+                               command=scrape_all_job)
+    button_scrape_all.grid(row=3, column=1, pady=10, columnspan=2)
+
     button_exit_grocerries = Button(text="Exit Programme", font=(FONT_NAME, 20), bg=COLOR3, command=window.destroy)
-    button_exit_grocerries.grid(row=3, column=0, padx=20, columnspan=2)
+    button_exit_grocerries.grid(row=4, column=0, padx=20, columnspan=2)
 
     button_main_menu = Button(text="Main Menu", font=(FONT_NAME, 20), bg=COLOR3, command=go_main)
-    button_main_menu.grid(row=3, column=2, padx=20, pady=20, columnspan=2)
+    button_main_menu.grid(row=4, column=2, padx=20, pady=20, columnspan=2)
 
 
 def house_price_gui():
@@ -170,11 +190,15 @@ def house_price_gui():
     button_jb_house = Button(text="Johor Bahru", font=(FONT_NAME, 20), bg=COLOR2, command=jb_house)
     button_jb_house.grid(row=2, column=1, pady=10, columnspan=2)
 
+    button_scrape_all = Button(text="Scrape All", font=(FONT_NAME, 20), bg=COLOR2,
+                               command=scrape_all_house)
+    button_scrape_all.grid(row=3, column=1, pady=10, columnspan=2)
+
     button_exit_grocerries = Button(text="Exit Programme", font=(FONT_NAME, 20), bg=COLOR3, command=window.destroy)
-    button_exit_grocerries.grid(row=3, column=0, padx=20, columnspan=2)
+    button_exit_grocerries.grid(row=4, column=0, padx=20, columnspan=2)
 
     button_main_menu = Button(text="Main Menu", font=(FONT_NAME, 20), bg=COLOR3, command=go_main)
-    button_main_menu.grid(row=3, column=2, padx=20, pady=20, columnspan=2)
+    button_main_menu.grid(row=4, column=2, padx=20, pady=20, columnspan=2)
 
 
 def go_main():
