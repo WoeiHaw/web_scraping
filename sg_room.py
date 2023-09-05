@@ -7,26 +7,29 @@ from save_data import Save_data
 from selenium.common.exceptions import NoSuchWindowException, WebDriverException
 
 import time
+
 now = datetime.now()
 TODAY_DATE = now.strftime("%d-%m-%Y")
 
 
 class Sg_room():
-    def __init__(self):
+    def _init_(self):
+        # self.count_driver = 0
 
         self.service = Service()
         self.options = webdriver.ChromeOptions()
         driver = webdriver.Chrome(service=self.service, options=self.options)
-        driver.implicitly_wait(5)
+        driver.implicitly_wait(2)
         locations_text = []
         for i in range(15):
             try:
                 locations_text = self.get_main_page(driver)
+                # self.count_driver += 1
                 break
             except NoSuchWindowException:
                 driver.quit()
                 driver = webdriver.Chrome(service=self.service, options=self.options)
-                driver.implicitly_wait(5)
+
             except Exception as error:
                 print(f"Error in get_house\n{error}")
 
@@ -49,19 +52,21 @@ class Sg_room():
             description = []
             links_list = []
 
-            # if num_location % 20 == 0:
+            # if self.count_driver > 10:
+            #     self.count_driver = 0
             #     driver.quit()
             #     driver = webdriver.Chrome(service=self.service, options=self.options)
 
             for i in range(10):
                 try:
                     links_for_house = self.get_location_page(num_location, driver)
+                    # self.count_driver += 1
                     break
 
-                except (NoSuchWindowException,WebDriverException):
+                except (NoSuchWindowException, WebDriverException):
                     driver.quit()
                     driver = webdriver.Chrome(service=self.service, options=self.options)
-                    driver.implicitly_wait(5)
+                    driver.implicitly_wait(2)
 
                 except Exception as error:
 
@@ -70,10 +75,9 @@ class Sg_room():
             print(locations_text[num_location])
             print(len(links_for_house))
 
-            count = 0
             for link in links_for_house:
 
-                while count < 10:
+                for i in range(10):
                     try:
                         data_dict = self.get_home_data(link, driver)
                         rental.append(data_dict["rental"])
@@ -87,9 +91,10 @@ class Sg_room():
                         wifi.append(data_dict["wifi"])
                         description.append(data_dict["description"])
                         links_list.append(data_dict["link"])
+                        # self.count_driver += 1
                         break
 
-                    except (NoSuchWindowException,WebDriverException):
+                    except (NoSuchWindowException, WebDriverException):
                         driver.quit()
                         driver = webdriver.Chrome(service=self.service, options=self.options)
                         driver.implicitly_wait(5)

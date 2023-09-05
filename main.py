@@ -46,12 +46,12 @@ def my_job():
 def scrape_all():
     scrape_all_grocerries()
 
-
     Sg_room()
 
     scrape_all_job()
 
     scrape_all_house()
+
 
 def scrape_all_grocerries():
     Coffee()
@@ -64,8 +64,8 @@ def scrape_all_grocerries():
 
 
 def scrape_all_job():
-    Job_info("../../Singapore Job.csv", "sg")
-    Job_info("../../Singapore Job.csv", "sg")
+    sg_job()
+    my_job()
 
 
 def scrape_all_house():
@@ -119,37 +119,37 @@ def groceries_menu():
     title.grid(row=0, column=1, columnspan=2)
 
     button_coffe = Button(text="Kluang Kopi O Kosong", font=(FONT_NAME, 20), bg=COLOR2, command=Coffee)
-    button_coffe.grid(row=1, column=1, pady=10, columnspan=2)
+    button_coffe.grid(row=1, column=1, pady=5, columnspan=2)
 
     button_shower_gel = Button(text="Dettol Shower Gel", font=(FONT_NAME, 20), bg=COLOR2, command=Dettol)
-    button_shower_gel.grid(row=2, column=1, pady=10, columnspan=2)
+    button_shower_gel.grid(row=2, column=1, pady=5, columnspan=2)
 
     button_shampoo = Button(text="Head and Shoulder Shampoo", font=(FONT_NAME, 20), bg=COLOR2, command=Shapoo)
-    button_shampoo.grid(row=3, column=1, pady=10, columnspan=2)
+    button_shampoo.grid(row=3, column=1, pady=5, columnspan=2)
 
     button_facewash = Button(text="Nivea Man Face-wash", font=(FONT_NAME, 20), bg=COLOR2, command=Facewash)
-    button_facewash.grid(row=4, column=1, pady=10, columnspan=2)
+    button_facewash.grid(row=4, column=1, pady=5, columnspan=2)
 
     button_toothpaste = Button(text="Darlie Toothpaste", font=(FONT_NAME, 20), bg=COLOR2, command=Toothpaste)
-    button_toothpaste.grid(row=5, column=1, pady=10, columnspan=2)
+    button_toothpaste.grid(row=5, column=1, pady=5, columnspan=2)
 
     button_skechers_shoes_my = Button(text="Skechers Shoes (Malaysia)", font=(FONT_NAME, 20), bg=COLOR2,
                                       command=skechers_shoes_my)
-    button_skechers_shoes_my.grid(row=6, column=1, pady=10, columnspan=2)
+    button_skechers_shoes_my.grid(row=6, column=1, pady=5, columnspan=2)
 
     button_skechers_shoes_sg = Button(text="Skechers Shoes (Singapore)", font=(FONT_NAME, 20), bg=COLOR2,
                                       command=skechers_shoes_sg)
-    button_skechers_shoes_sg.grid(row=7, column=1, pady=10, columnspan=2)
+    button_skechers_shoes_sg.grid(row=7, column=1, pady=5, columnspan=2)
 
     button_scrape_all = Button(text="Scrape All", font=(FONT_NAME, 20), bg=COLOR2,
                                command=scrape_all_grocerries)
-    button_scrape_all.grid(row=8, column=1, pady=10, columnspan=2)
+    button_scrape_all.grid(row=8, column=1, pady=5, columnspan=2)
 
     button_exit_grocerries = Button(text="Exit Programme", font=(FONT_NAME, 20), bg=COLOR3, command=window.destroy)
-    button_exit_grocerries.grid(row=9, column=0, padx=20, pady=20, columnspan=2)
+    button_exit_grocerries.grid(row=9, column=0, padx=20, pady=10, columnspan=2)
 
     button_main_menu = Button(text="Main Menu", font=(FONT_NAME, 20), bg=COLOR3, command=go_main)
-    button_main_menu.grid(row=9, column=2, padx=20, pady=20, columnspan=2)
+    button_main_menu.grid(row=9, column=2, padx=20, pady=10, columnspan=2)
 
 
 def data_science_job_gui():

@@ -8,13 +8,14 @@ from datetime import datetime
 from check_data import Check_data
 from save_data import Save_data
 import os
+
 now = datetime.now()
 TODAY_DATE = now.strftime("%d-%m-%Y")
 
 
 class Coffee():
-    def __init__(self):
-        super().__init__()
+    def _init_(self):
+        super()._init_()
         check = Check_data("../../kopi o price.csv")
         self.service = Service()
         self.options = webdriver.ChromeOptions()
@@ -50,7 +51,6 @@ class Coffee():
                 self.data_save_dict = {"Title PGMall": [self.pg_title],
                                        "PGMall Price": [self.pg_price]}
 
-
             Save_data("../../kopi o price.csv", self.data_save_dict, check.is_today_empty)
 
     def scrape_coffe_shopee(self):
@@ -68,18 +68,22 @@ class Coffee():
             email_tab = driver.find_element(By.NAME, "loginKey")
             password_tab = driver.find_element(By.NAME, "password")
 
-            email_tab.send_keys(os.environ.get("EMAIL"))
-            password_tab.send_keys(os.environ.get("SHOPEE_PASSWORD"))
+            email_tab.send_keys("woeihaw94@gmail.com")
+            password_tab.send_keys("ANG0321zxc")
+            button = driver.find_element(By.XPATH,
+                                         '//*[@id="main"]/div/div[2]/div/div/div/div[2]/form/div/div[2]/button')
             WebDriverWait(driver, 20).until(EC.element_to_be_clickable(
-                (By.XPATH, '//*[@id="main"]/div/div[2]/div/div/div/div[2]/form/div/div[2]/button'))).click()
+                (By.XPATH, '//*[@id="main"]/div/div[2]/div/div/div/div[2]/form/div/div[2]/button')))
+            time.sleep(5)
+            button.click()
             time.sleep(5)
 
             title_shopee = driver.find_element(By.XPATH,
                                                '//*[@id="main"]/div/div[2]/div[1]/div[1]/div/div/div[1]/span').text
             price_shopee = driver.find_element(By.CSS_SELECTOR, 'div.pqTWkA').text
 
-            price_shopee =price_shopee.replace("RM","").strip()
-            time.sleep(5)
+            price_shopee = price_shopee.replace("RM", "").strip()
+
             driver.quit()
             return title_shopee, price_shopee
         except Exception as error:
@@ -96,7 +100,7 @@ class Coffee():
             time.sleep(5)
             title_lazada = driver.find_element(By.CSS_SELECTOR, "h1.pdp-mod-product-badge-title").text
             price_lazada = driver.find_element(By.CSS_SELECTOR, "div.pdp-product-price > span.pdp-price").text
-            price_lazada = price_lazada.replace("RM","").strip()
+            price_lazada = price_lazada.replace("RM", "").strip()
             time.sleep(5)
             driver.quit()
             return title_lazada, price_lazada
@@ -123,5 +127,3 @@ class Coffee():
             message = f"An exception occur in Pg Mall(coffee): \n{error}"
             print(message)
             return "", ""
-
-
