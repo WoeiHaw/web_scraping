@@ -14,11 +14,12 @@ TODAY_DATE = now.strftime("%d-%m-%Y")
 
 
 class Facewash():
-    def __init__(self):
-        check = Check_data("../../Nivea Man.csv")
+    def __init__(self, filename):
 
         self.service = Service()
         self.options = webdriver.ChromeOptions()
+        self.filename = filename
+        check = Check_data(self.filename)
 
         if check.is_today_empty:
             self.lazada_title, self.lazada_price = self.lazada()
@@ -33,7 +34,7 @@ class Facewash():
                 "Aeon Price": [self.aeon_price],
                 "Watson Title": [self.watson_title],
                 "Watson Price": [self.watson_price]}
-            Save_data("../../Nivea Man.csv", self.data_save_dict, check.is_today_empty)
+            Save_data(self.filename, self.data_save_dict, check.is_today_empty)
 
         elif len(check.nan_column) != 0:
 
@@ -58,7 +59,7 @@ class Facewash():
                 # self.data_save_dict["Watson Title"].append(self.watson_title)
                 # self.data_save_dict["Watson Price"].append(self.watson_price)
 
-            Save_data("../../Nivea Man.csv", self.data_save_dict, check.is_today_empty)
+            Save_data(self.filename, self.data_save_dict, check.is_today_empty)
 
     def lazada(self):
         try:

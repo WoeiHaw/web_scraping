@@ -9,6 +9,8 @@ from data_science_job import Job_info
 from house_price import House_price
 from shoes import Shoes
 from backup import Backup
+from backup_drive import Backup_drive
+from download_data import Download_data
 import time
 
 COLOR1 = "#FAF0E6"
@@ -20,33 +22,57 @@ FONT_NAME = "Courier"
 
 # ---------------------------- TRIGGER FOR WEB SCRAPPING ------------------------------- #
 def skechers_shoes_my():
-    Shoes("my", "../../skechers_shoes_MY.csv")
+    Shoes("my", "../../data/skechers_shoes_MY.csv")
 
 
 def skechers_shoes_sg():
-    Shoes("sg", "../../skechers_shoes_SG.csv")
+    Shoes("sg", "../../data/skechers_shoes_SG.csv")
 
 
 def kl_house():
-    House_price("../../House Price kl.csv", "kuala+lumpur")
+    House_price("../../data/House Price kl.csv", "kuala+lumpur")
 
 
 def jb_house():
-    House_price("../../House Price JB.csv", "johor+bahru")
+    House_price("../../data/House Price JB.csv", "johor+bahru")
 
 
 def sg_job():
-    Job_info("../../Singapore Job.csv", "sg")
+    Job_info("../../data/Singapore Job.csv", "sg")
 
 
 def my_job():
-    Job_info("../../Malaysia Job.csv", "my")
+    Job_info("../../data/Malaysia Job.csv", "my")
+
+
+def scrape_sg_room():
+    Sg_room("../../data/sg rental.csv")
+
+
+def scrape_coffee():
+    Coffee("../../data/kopi o price.csv")
+
+
+def scrape_shower_gel():
+    Dettol("../../data/Dettol Shower Gel.csv")
+
+
+def scrape_shampoo():
+    Shapoo("../../data/shampoo price.csv")
+
+
+def scrape_face_wash():
+    Facewash("../../data/Nivea Man.csv")
+
+
+def scrape_tooth_paste():
+    Toothpaste("../../data/Darlie Toothpaste.csv")
 
 
 def scrape_all():
     scrape_all_grocerries()
 
-    Sg_room()
+    scrape_sg_room()
 
     scrape_all_job()
 
@@ -54,13 +80,13 @@ def scrape_all():
 
 
 def scrape_all_grocerries():
-    Coffee()
-    Dettol()
-    Shapoo()
-    Facewash()
-    Toothpaste()
-    Shoes("my", "../../skechers_shoes_MY.csv")
-    Shoes("sg", "../../skechers_shoes_SG.csv")
+    scrape_coffee()
+    scrape_shower_gel()
+    scrape_shampoo()
+    scrape_face_wash()
+    scrape_tooth_paste()
+    Shoes("my", "../../data/skechers_shoes_MY.csv")
+    Shoes("sg", "../../data/skechers_shoes_SG.csv")
 
 
 def scrape_all_job():
@@ -69,24 +95,24 @@ def scrape_all_job():
 
 
 def scrape_all_house():
-    House_price("../../House Price kl.csv", "kuala+lumpur")
-    House_price("../../House Price JB.csv", "johor+bahru")
+    House_price("../../data/House Price kl.csv", "kuala+lumpur")
+    House_price("../../data/House Price JB.csv", "johor+bahru")
 
 
 def back_up():
     file_location = [
-        "../../kopi o price.csv",
-        "../../Dettol Shower Gel.csv",
-        "../../shampoo price.csv",
-        "../../Nivea Man.csv",
-        "../../Darlie Toothpaste.csv",
-        "../../skechers_shoes_MY.csv",
-        "../../skechers_shoes_SG.csv",
-        "../../sg rental.csv",
-        "../../Malaysia Job.csv",
-        "../../Singapore Job.csv",
-        "../../House Price kl.csv",
-        "../../House Price JB.csv",
+        "../../data/kopi o price.csv",
+        "../../data/Dettol Shower Gel.csv",
+        "../../data/shampoo price.csv",
+        "../../data/Nivea Man.csv",
+        "../../data/Darlie Toothpaste.csv",
+        "../../data/skechers_shoes_MY.csv",
+        "../../data/skechers_shoes_SG.csv",
+        "../../data/sg rental.csv",
+        "../../data/Malaysia Job.csv",
+        "../../data/Singapore Job.csv",
+        "../../data/House Price kl.csv",
+        "../../data/House Price JB.csv",
     ]
     backup_location = [
         "../../Data_back_up/kopi o price.csv",
@@ -118,19 +144,19 @@ def groceries_menu():
     title = Label(text="Grocerries Item", font=(FONT_NAME, 40), bg=COLOR1, fg=COLOR3)
     title.grid(row=0, column=1, columnspan=2)
 
-    button_coffe = Button(text="Kluang Kopi O Kosong", font=(FONT_NAME, 20), bg=COLOR2, command=Coffee)
+    button_coffe = Button(text="Kluang Kopi O Kosong", font=(FONT_NAME, 20), bg=COLOR2, command=scrape_coffee)
     button_coffe.grid(row=1, column=1, pady=5, columnspan=2)
 
-    button_shower_gel = Button(text="Dettol Shower Gel", font=(FONT_NAME, 20), bg=COLOR2, command=Dettol)
+    button_shower_gel = Button(text="Dettol Shower Gel", font=(FONT_NAME, 20), bg=COLOR2, command=scrape_shower_gel)
     button_shower_gel.grid(row=2, column=1, pady=5, columnspan=2)
 
-    button_shampoo = Button(text="Head and Shoulder Shampoo", font=(FONT_NAME, 20), bg=COLOR2, command=Shapoo)
+    button_shampoo = Button(text="Head and Shoulder Shampoo", font=(FONT_NAME, 20), bg=COLOR2, command=scrape_shampoo)
     button_shampoo.grid(row=3, column=1, pady=5, columnspan=2)
 
-    button_facewash = Button(text="Nivea Man Face-wash", font=(FONT_NAME, 20), bg=COLOR2, command=Facewash)
+    button_facewash = Button(text="Nivea Man Face-wash", font=(FONT_NAME, 20), bg=COLOR2, command=scrape_face_wash)
     button_facewash.grid(row=4, column=1, pady=5, columnspan=2)
 
-    button_toothpaste = Button(text="Darlie Toothpaste", font=(FONT_NAME, 20), bg=COLOR2, command=Toothpaste)
+    button_toothpaste = Button(text="Darlie Toothpaste", font=(FONT_NAME, 20), bg=COLOR2, command=scrape_tooth_paste)
     button_toothpaste.grid(row=5, column=1, pady=5, columnspan=2)
 
     button_skechers_shoes_my = Button(text="Skechers Shoes (Malaysia)", font=(FONT_NAME, 20), bg=COLOR2,
@@ -176,6 +202,30 @@ def data_science_job_gui():
     button_main_menu.grid(row=4, column=2, padx=20, pady=20, columnspan=2)
 
 
+def data_management():
+    global window
+    window.destroy()
+    window = new_window()
+
+    title = Label(text="Data Management", font=(FONT_NAME, 40), bg=COLOR1, fg=COLOR3)
+    title.grid(row=0, column=0, pady=10, columnspan=3)
+
+    download_data = Button(text="Download Data", font=(FONT_NAME, 20), bg=COLOR2, command=Download_data)
+    download_data.grid(row=1, column=0, pady=10, columnspan=3)
+
+    back_up_local = Button(text="Back Up Locally", font=(FONT_NAME, 20), bg=COLOR2, command=back_up)
+    back_up_local.grid(row=2, column=0, pady=10, columnspan=3)
+
+    back_up_drive = Button(text="Back Up - Google Drive", font=(FONT_NAME, 20), bg=COLOR2, command=Backup_drive)
+    back_up_drive.grid(row=3, column=0, pady=10, columnspan=3)
+
+    button_exit_grocerries = Button(text="Exit Programme", font=(FONT_NAME, 20), bg=COLOR3, command=window.destroy)
+    button_exit_grocerries.grid(row=4, column=0, padx=20, columnspan=1)
+
+    button_main_menu = Button(text="Main Menu", font=(FONT_NAME, 20), bg=COLOR3, command=go_main)
+    button_main_menu.grid(row=4, column=2, padx=20, pady=20, columnspan=1)
+
+
 def house_price_gui():
     global window
     window.destroy()
@@ -217,7 +267,7 @@ def main_gui():
     button_groceries.grid(row=1, column=0, pady=10)
 
     button_sg_room = Button(text="Singapore Room Rental Information ", font=(FONT_NAME, 20), bg=COLOR2,
-                            command=Sg_room)
+                            command=scrape_sg_room)
     button_sg_room.grid(row=2, column=0, pady=10)
 
     button_job = Button(text="Data Science Job Information ", font=(FONT_NAME, 20), bg=COLOR2,
@@ -231,11 +281,11 @@ def main_gui():
     button_run_all = Button(text="Scrape All", font=(FONT_NAME, 20), bg=COLOR2, command=scrape_all)
     button_run_all.grid(row=5, column=0, pady=10)
 
-    button_backup = Button(text="Backup", font=(FONT_NAME, 20), bg=COLOR2, command=back_up)
+    button_backup = Button(text="Data Management", font=(FONT_NAME, 20), bg=COLOR2, command=data_management)
     button_backup.grid(row=6, column=0, pady=10)
 
     button_exit = Button(text="Exit Programme", font=(FONT_NAME, 20), bg=COLOR3, command=window.destroy)
-    button_exit.grid(row=7, column=0, pady=10)
+    button_exit.grid(row=8, column=0, pady=10)
 
     window.mainloop()
 

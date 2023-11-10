@@ -14,10 +14,12 @@ TODAY_DATE = now.strftime("%d-%m-%Y")
 
 
 class Toothpaste():
-    def __init__(self):
-        check = Check_data("../../Darlie Toothpaste.csv")
+    def __init__(self, filename):
+
         self.service = Service()
         self.options = webdriver.ChromeOptions()
+        self.filename = filename
+        check = Check_data(self.filename)
         if check.is_today_empty:
             self.watson_title, self.watson_price = self.watson()
             self.guardian_title, self.guardian_price = self.guardian()
@@ -31,7 +33,7 @@ class Toothpaste():
                 "BigPharmacy Price": [self.big_pham_price],
                 "Watson Title": [self.watson_title],
                 "Watson Price": [self.watson_price]}
-            Save_data("../../Darlie Toothpaste.csv", self.data_save_dict, check.is_today_empty)
+            Save_data(self.filename, self.data_save_dict, check.is_today_empty)
 
         elif len(check.nan_column) != 0:
 
@@ -50,7 +52,7 @@ class Toothpaste():
                 self.data_save_dict = {"Watson Title": [self.watson_title],
                                        "Watson Price": [self.watson_price]}
 
-            Save_data("../../Darlie Toothpaste.csv", self.data_save_dict, check.is_today_empty)
+            Save_data(self.filename, self.data_save_dict, check.is_today_empty)
 
     def watson(self):
         driver = webdriver.Chrome(service=self.service, options=self.options)

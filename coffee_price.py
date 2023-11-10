@@ -13,12 +13,15 @@ now = datetime.now()
 TODAY_DATE = now.strftime("%d-%m-%Y")
 
 
-class Coffee():
-    def _init_(self):
-        super()._init_()
-        check = Check_data("../../kopi o price.csv")
+class Coffee:
+    def __init__(self, filename):
+
+        # super()._init_()
+
+        self.filename = filename
         self.service = Service()
         self.options = webdriver.ChromeOptions()
+        check = Check_data(self.filename)
         if check.is_today_empty:
             self.shopee_title, self.shopee_price = self.scrape_coffe_shopee()
             self.lazada_title, self.lazada_price = self.scrape_coffe_lazada()
@@ -32,7 +35,7 @@ class Coffee():
                 "Lazada Price": [self.lazada_price],
                 "Title PGMall": [self.pg_title],
                 "PGMall Price": [self.pg_price]}
-            Save_data("../../kopi o price.csv", self.data_save_dict, check.is_today_empty)
+            Save_data(self.filename, self.data_save_dict, check.is_today_empty)
 
         elif len(check.nan_column) != 0:
 
@@ -51,7 +54,7 @@ class Coffee():
                 self.data_save_dict = {"Title PGMall": [self.pg_title],
                                        "PGMall Price": [self.pg_price]}
 
-            Save_data("../../kopi o price.csv", self.data_save_dict, check.is_today_empty)
+            Save_data(self.filename, self.data_save_dict, check.is_today_empty)
 
     def scrape_coffe_shopee(self):
 

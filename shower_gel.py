@@ -14,17 +14,19 @@ TODAY_DATE = now.strftime("%d-%m-%Y")
 
 
 class Dettol():
-    def __init__(self):
-        check = Check_data("../../Dettol Shower Gel.csv")
+    def __init__(self, filename):
+
         self.service = Service()
         self.options = webdriver.ChromeOptions()
+        self.filename = filename
+        check = Check_data(self.filename)
         if check.is_today_empty:
             self.watson_title, self.watson_price = self.watson()
             self.aeon_title, self.aeon_price = self.aeon()
             self.guardian_title, self.guardian_price = self.guardian()
             self.caring_title, self.caring_price = self.caring()
-            try :
-                guardian_price_float_pcs = float(self.guardian_price)/2
+            try:
+                guardian_price_float_pcs = float(self.guardian_price) / 2
             except:
                 guardian_price_float_pcs = ""
             self.data_save_dict = {
@@ -37,12 +39,12 @@ class Dettol():
                 "Price/pcs (Aeon)": [self.aeon_price],
                 "Title Guardian": [self.guardian_title],
                 "Price Guardian": [self.guardian_price],
-                "Price/pcs (Guardian)": [ guardian_price_float_pcs ],
+                "Price/pcs (Guardian)": [guardian_price_float_pcs],
                 "Title Caring": [self.caring_title],
                 "Price Caring": [self.caring_price],
                 "Price/pcs (Caring)": [self.caring_price]
             }
-            Save_data("../../Dettol Shower Gel.csv", self.data_save_dict, check.is_today_empty)
+            Save_data(self.filename, self.data_save_dict, check.is_today_empty)
 
         elif len(check.nan_column) != 0:
 
@@ -70,7 +72,7 @@ class Dettol():
                                        "Price Caring": [self.caring_price],
                                        "Price/pcs (Caring)": [self.caring_price]}
 
-            Save_data("../../Dettol Shower Gel.csv", self.data_save_dict, check.is_today_empty)
+            Save_data(self.filename, self.data_save_dict, check.is_today_empty)
 
     def watson(self):
         try:
@@ -142,7 +144,7 @@ class Dettol():
             # WebDriverWait(driver, 20).until(EC.element_to_be_clickable((By.XPATH, '//*[@id="root"]/aside[2]/form/div/div[2]/div[2]/button'))).click()
             time.sleep(5)
             driver.quit()
-            caring_price = caring_price.replace("RM","").strip()
+            caring_price = caring_price.replace("RM", "").strip()
             return caring_title, caring_price
         except Exception as error:
             print(f"Caring error(Shower Gel):\n{error}")

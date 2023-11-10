@@ -6,16 +6,14 @@ from read_csv import Read_csv
 from save_data import Save_data
 from selenium.common.exceptions import NoSuchWindowException, WebDriverException
 
-import time
-
 now = datetime.now()
 TODAY_DATE = now.strftime("%d-%m-%Y")
 
 
 class Sg_room():
-    def _init_(self):
+    def __init__(self, filename):
         # self.count_driver = 0
-
+        self.filename = filename
         self.service = Service()
         self.options = webdriver.ChromeOptions()
         driver = webdriver.Chrome(service=self.service, options=self.options)
@@ -117,7 +115,7 @@ class Sg_room():
             data_save_dict["Description"] = description
             data_save_dict["link"] = links_list
             if len(data_save_dict["link"]) != 0:
-                Save_data("../../sg rental.csv", data_save_dict, True)
+                Save_data(self.filename, data_save_dict, True)
 
         driver.quit()
 
@@ -133,7 +131,8 @@ class Sg_room():
         return locations_text
 
     def get_location_page(self, num_location, driver):
-        links_list_current = Read_csv("../../sg rental.csv").get_links()
+        links_list_current = Read_csv(self.filename).get_links()
+
         # driver = webdriver.Chrome(service=self.service, options=self.options)
 
         driver.get("https://www.ilivesg.com/")
