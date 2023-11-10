@@ -11,7 +11,11 @@ from shoes import Shoes
 from backup import Backup
 from backup_drive import Backup_drive
 from download_data import Download_data
+from shoes_dashboard import Shoes_dashboard
+from grocery_item_dashboard import Grocery_dashboard
+from shoes_image import Shoes_image
 import time
+from dash import Dash, html
 
 COLOR1 = "#FAF0E6"
 COLOR2 = "#B9B4C7"
@@ -99,6 +103,11 @@ def scrape_all_house():
     House_price("../../data/House Price JB.csv", "johor+bahru")
 
 
+def get_shoes_image():
+    Shoes_image("my")
+    Shoes_image("sg")
+
+
 def back_up():
     file_location = [
         "../../data/kopi o price.csv",
@@ -132,7 +141,7 @@ def back_up():
     pass
 
 
-# ---------------------------- UI SETUP ------------------------------- #
+# ---------------------------- UI SETUP FOR WEB SCRAPING ------------------------------- #
 window = None
 
 
@@ -174,7 +183,7 @@ def groceries_menu():
     button_exit_grocerries = Button(text="Exit Programme", font=(FONT_NAME, 20), bg=COLOR3, command=window.destroy)
     button_exit_grocerries.grid(row=9, column=0, padx=20, pady=10, columnspan=2)
 
-    button_main_menu = Button(text="Main Menu", font=(FONT_NAME, 20), bg=COLOR3, command=go_main)
+    button_main_menu = Button(text="Go Back", font=(FONT_NAME, 20), bg=COLOR3, command=go_web_scrape_main_gui)
     button_main_menu.grid(row=9, column=2, padx=20, pady=10, columnspan=2)
 
 
@@ -198,7 +207,7 @@ def data_science_job_gui():
     button_exit_grocerries = Button(text="Exit Programme", font=(FONT_NAME, 20), bg=COLOR3, command=window.destroy)
     button_exit_grocerries.grid(row=4, column=0, padx=20, columnspan=2)
 
-    button_main_menu = Button(text="Main Menu", font=(FONT_NAME, 20), bg=COLOR3, command=go_main)
+    button_main_menu = Button(text="GO BACK", font=(FONT_NAME, 20), bg=COLOR3, command=go_web_scrape_main_gui)
     button_main_menu.grid(row=4, column=2, padx=20, pady=20, columnspan=2)
 
 
@@ -219,11 +228,15 @@ def data_management():
     back_up_drive = Button(text="Back Up - Google Drive", font=(FONT_NAME, 20), bg=COLOR2, command=Backup_drive)
     back_up_drive.grid(row=3, column=0, pady=10, columnspan=3)
 
-    button_exit_grocerries = Button(text="Exit Programme", font=(FONT_NAME, 20), bg=COLOR3, command=window.destroy)
-    button_exit_grocerries.grid(row=4, column=0, padx=20, columnspan=1)
+    skechers_shoes_image = Button(text="Get Skeacher Shoes Image", font=(FONT_NAME, 20), bg=COLOR2,
+                                  command=get_shoes_image)
+    skechers_shoes_image.grid(row=4, column=0, pady=10, columnspan=3)
 
-    button_main_menu = Button(text="Main Menu", font=(FONT_NAME, 20), bg=COLOR3, command=go_main)
-    button_main_menu.grid(row=4, column=2, padx=20, pady=20, columnspan=1)
+    button_exit_grocerries = Button(text="Exit Programme", font=(FONT_NAME, 20), bg=COLOR3, command=window.destroy)
+    button_exit_grocerries.grid(row=5, column=0, padx=20, columnspan=1)
+
+    button_main_menu = Button(text="GO BACK", font=(FONT_NAME, 20), bg=COLOR3, command=go_web_scrape_main_gui)
+    button_main_menu.grid(row=5, column=2, padx=20, pady=20, columnspan=1)
 
 
 def house_price_gui():
@@ -247,42 +260,106 @@ def house_price_gui():
     button_exit_grocerries = Button(text="Exit Programme", font=(FONT_NAME, 20), bg=COLOR3, command=window.destroy)
     button_exit_grocerries.grid(row=4, column=0, padx=20, columnspan=2)
 
-    button_main_menu = Button(text="Main Menu", font=(FONT_NAME, 20), bg=COLOR3, command=go_main)
+    button_main_menu = Button(text="GO BACK", font=(FONT_NAME, 20), bg=COLOR3, command=go_web_scrape_main_gui)
     button_main_menu.grid(row=4, column=2, padx=20, pady=20, columnspan=2)
 
 
-def go_main():
+def go_web_scrape_main_gui():
+    global window
+    # window.destroy()
+    web_scrape_main_gui()
+
+
+def go_main_menu():
     global window
     window.destroy()
     main_gui()
 
 
-def main_gui():
+def web_scrape_main_gui():
     global window
+    window.destroy()
     window = new_window()
     title = Label(text="Web Scraping Programme", font=(FONT_NAME, 40), bg=COLOR1, fg=COLOR3)
-    title.grid(row=0, column=0, )
+    title.grid(row=0, column=0, columnspan=2)
 
     button_groceries = Button(text="Groceries Items", font=(FONT_NAME, 20), bg=COLOR2, command=groceries_menu)
-    button_groceries.grid(row=1, column=0, pady=10)
+    button_groceries.grid(row=1, column=0, pady=10, columnspan=2)
 
     button_sg_room = Button(text="Singapore Room Rental Information ", font=(FONT_NAME, 20), bg=COLOR2,
                             command=scrape_sg_room)
-    button_sg_room.grid(row=2, column=0, pady=10)
+    button_sg_room.grid(row=2, column=0, pady=10, columnspan=2)
 
     button_job = Button(text="Data Science Job Information ", font=(FONT_NAME, 20), bg=COLOR2,
                         command=data_science_job_gui)
-    button_job.grid(row=3, column=0, pady=10)
+    button_job.grid(row=3, column=0, pady=10, columnspan=2)
 
     button_house_price = Button(text="Johor Bahru and Kuala Lumpur House Price", font=(FONT_NAME, 20), bg=COLOR2,
                                 command=house_price_gui)
-    button_house_price.grid(row=4, column=0, pady=10)
+    button_house_price.grid(row=4, column=0, pady=10, columnspan=2)
 
     button_run_all = Button(text="Scrape All", font=(FONT_NAME, 20), bg=COLOR2, command=scrape_all)
-    button_run_all.grid(row=5, column=0, pady=10)
+    button_run_all.grid(row=5, column=0, pady=10, columnspan=2)
 
     button_backup = Button(text="Data Management", font=(FONT_NAME, 20), bg=COLOR2, command=data_management)
-    button_backup.grid(row=6, column=0, pady=10)
+    button_backup.grid(row=6, column=0, pady=10, columnspan=2)
+
+    button_exit = Button(text="Exit Programme", font=(FONT_NAME, 20), bg=COLOR3, command=window.destroy)
+    button_exit.grid(row=8, column=0, pady=10)
+
+    button_main = Button(text="Main Menu", font=(FONT_NAME, 20), bg=COLOR3, command=go_main_menu)
+    button_main.grid(row=8, column=1, pady=10)
+
+
+# ---------------------------- UI SETUP FOR WEB SCRAPING ------------------------------- #
+def get_shoes_dashboard():
+    shoes_dashboard = Shoes_dashboard("../../data/")
+    shoes_dashboard.run()
+    # time.sleep(30)
+
+
+def get_grocery_dashboard():
+    grocery_dashboard = Grocery_dashboard("../../data/")
+    grocery_dashboard.run()
+
+
+def dashboard_menu():
+    global window
+    window.destroy()
+    window = new_window()
+
+    title = Label(text="Dashboard Menu", font=(FONT_NAME, 40), bg=COLOR1, fg=COLOR3)
+    title.grid(row=0, column=0, columnspan=2)
+
+    button_shoes_dashboard = Button(text="Skeachers Shoes Dashboard", font=(FONT_NAME, 20), bg=COLOR2,
+                                    command=get_shoes_dashboard)
+    button_shoes_dashboard.grid(row=1, column=0, pady=10, columnspan=2)
+
+    button_grocery_dashboard = Button(text="Grocery Item Dashboard", font=(FONT_NAME, 20), bg=COLOR2,
+                                      command=get_grocery_dashboard
+                                      )
+    button_grocery_dashboard.grid(row=2, column=0, pady=10, columnspan=2)
+
+    button_exit = Button(text="Exit Programme", font=(FONT_NAME, 20), bg=COLOR3, command=window.destroy)
+    button_exit.grid(row=8, column=0, pady=10)
+
+    button_main = Button(text="Main Menu", font=(FONT_NAME, 20), bg=COLOR3, command=go_main_menu)
+    button_main.grid(row=8, column=1, pady=10)
+
+
+def main_gui():
+    global window
+    window = new_window()
+    title = Label(text="Web Scraping & Dashboard Programme", font=(FONT_NAME, 40), bg=COLOR1, fg=COLOR3)
+    title.grid(row=0, column=0, )
+
+    button_web_scraping = Button(text="Web Scraping Programme", font=(FONT_NAME, 20), bg=COLOR2,
+                                 command=web_scrape_main_gui)
+    button_web_scraping.grid(row=1, column=0, pady=10)
+
+    button_dashboard = Button(text="Dashboard", font=(FONT_NAME, 20), bg=COLOR2,
+                              command=dashboard_menu)
+    button_dashboard.grid(row=2, column=0, )
 
     button_exit = Button(text="Exit Programme", font=(FONT_NAME, 20), bg=COLOR3, command=window.destroy)
     button_exit.grid(row=8, column=0, pady=10)
@@ -298,4 +375,5 @@ def new_window():
     return window
 
 
+# web_scrape_main_gui()
 main_gui()

@@ -12,7 +12,7 @@ today_date = now.strftime("%d-%m-%Y")
 
 
 class Shoes():
-    def __init__(self,place,filename):
+    def __init__(self, place, filename):
         self.service = Service()
         self.options = webdriver.ChromeOptions()
         check = Check_data(filename)
@@ -23,22 +23,26 @@ class Shoes():
     def get_shoes(self, place):
         if place == "my":
             currency = "RM"
-        elif place =="sg":
+        elif place == "sg":
             currency = "SGD $"
         for i in range(10):
             try:
                 driver = webdriver.Chrome(service=self.service, options=self.options)
 
-                driver.get(f"https://www.skechers.com.{place}/collections/men-sport")
-                while True:
+                driver.get(f"https://www.skechers.com.{place}/collections/men")
+                isStop = False
+                count = 0
+                while not isStop:
                     driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
                     driver.implicitly_wait(2)
+                    isStop = False if count <= 30 else True
                     try:
                         if driver.find_element(By.XPATH,
                                                '//div[@class="show-more tt_item_all_js"]').text == "NO MORE PRODUCTS":
                             break
                     except:
                         pass
+                    count += 1
 
                 shoes = driver.find_elements(By.XPATH, '//div[@class="col-6 col-md-3 tt-col-item"]')
 
@@ -46,16 +50,20 @@ class Shoes():
                 links_list = []
                 price_list = []
                 for shoe in shoes:
-                    links = shoe.find_elements(By.TAG_NAME, 'a')
+                    link = shoe.find_element(By.CSS_SELECTOR, 'a')
 
                     prices = shoe.find_element(By.CSS_SELECTOR, "div.tt-price")
 
                     description = shoe.find_element(By.TAG_NAME, "h2")
-                    for link in links:
-                        addr = link.get_attribute("href")
-                        if addr != f"https://www.skechers.com.{place}/collections/men-sport#":
-                            links_list.append(addr)
-                            break
+
+                    addr = f"https://www.skechers.com.{place}{link.get_attribute('data-value')}"
+
+                    if addr != f"https://www.skechers.com.{place}/collections/men#":
+                        links_list.append(addr)
+                    else:
+                        links_list.append("-")
+
+
                     price = prices.find_elements(By.TAG_NAME, "span")
                     price_list.append(price[0].text)
                     price_list = [price.replace("RM", "") for price in price_list]
