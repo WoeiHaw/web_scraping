@@ -48,10 +48,8 @@ class Grocery_dashboard():
 
             ]),
             dbc.Card([dcc.Graph(id="line_graph", className="dbc")]),
-            dbc.Row([
-                dbc.Col([dbc.Card(id="data-table")]),
-                dbc.Col([dbc.Card([dcc.Graph(id="pie-chart")])])
-            ])
+            dbc.Card([dbc.Col([dbc.Card(id="data-table")]),]),
+            dbc.Card([dbc.Col([dbc.Card([dcc.Graph(id="pie-chart")])])])
         ])
 
         @self.app.callback(
