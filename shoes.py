@@ -63,7 +63,6 @@ class Shoes():
                     else:
                         links_list.append("-")
 
-
                     price = prices.find_elements(By.TAG_NAME, "span")
                     price_list.append(price[0].text)
                     price_list = [price.replace("RM", "") for price in price_list]
