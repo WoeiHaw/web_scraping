@@ -39,10 +39,10 @@ class Coffee:
 
         elif len(check.nan_column) != 0:
 
-            # if ("Title Shopee" in check.nan_column) | ("Shopee Price" in check.nan_column):
-            #     self.shopee_title, self.shopee_price = self.scrape_coffe_shopee()
-            #     self.data_save_dict = {"Title Shopee": [self.shopee_title],
-            #                            "Shopee Price": [self.shopee_price]}
+            if ("Title Shopee" in check.nan_column) | ("Shopee Price" in check.nan_column):
+                self.shopee_title, self.shopee_price = self.scrape_coffe_shopee()
+                self.data_save_dict = {"Title Shopee": [self.shopee_title],
+                                       "Shopee Price": [self.shopee_price]}
 
             if ("Title Lazada" in check.nan_column) | ("Lazada Price" in check.nan_column):
                 self.lazada_title, self.lazada_price = self.scrape_coffe_lazada()
@@ -56,43 +56,43 @@ class Coffee:
 
             Save_data(self.filename, self.data_save_dict, check.is_today_empty)
 
-    # def scrape_coffe_shopee(self):
-    #
-    #     # Shopee
-    #     try:
-    #         driver = webdriver.Chrome(service=self.service, options=self.options)
-    #         driver.get(
-    #             "https://shopee.com.my/Kluang-Coffee-Cap-Televisyen-Kopi-O-Kosong-Eco-Pack-(100-sachets-x-1-Pack)-Kopi-O-Kluang-Cap-TV-i.25563366.498280783?sp_atk=72da7cb5-8cca-435e-8fb7-44f1f0289c18&xptdk=72da7cb5-8cca-435e-8fb7-44f1f0289c18")
-    #         time.sleep(3)
-    #         WebDriverWait(driver, 20).until(
-    #             EC.element_to_be_clickable(
-    #                 (By.XPATH, '//*[@id="modal"]/div[1]/div[1]/div/div[3]/div[1]/button'))).click()
-    #
-    #         email_tab = driver.find_element(By.NAME, "loginKey")
-    #         password_tab = driver.find_element(By.NAME, "password")
-    #
-    #         email_tab.send_keys("")
-    #         password_tab.send_keys("")
-    #         button = driver.find_element(By.XPATH,
-    #                                      '//*[@id="main"]/div/div[2]/div/div/div/div[2]/form/div/div[2]/button')
-    #         WebDriverWait(driver, 20).until(EC.element_to_be_clickable(
-    #             (By.XPATH, '//*[@id="main"]/div/div[2]/div/div/div/div[2]/form/div/div[2]/button')))
-    #         time.sleep(5)
-    #         button.click()
-    #         time.sleep(5)
-    #
-    #         title_shopee = driver.find_element(By.XPATH,
-    #                                            '//*[@id="main"]/div/div[2]/div[1]/div[1]/div/div/div[1]/span').text
-    #         price_shopee = driver.find_element(By.CSS_SELECTOR, 'div.pqTWkA').text
-    #
-    #         price_shopee = price_shopee.replace("RM", "").strip()
-    #
-    #         driver.quit()
-    #         return title_shopee, price_shopee
-    #     except Exception as error:
-    #         message = f"An exception occur in Shopee(coffee): \n{error}"
-    #         print(message)
-    #         return "", ""
+    def scrape_coffe_shopee(self):
+
+        # Shopee
+        try:
+            driver = webdriver.Chrome(service=self.service, options=self.options)
+            driver.get(
+                "https://shopee.com.my/Kluang-Coffee-Cap-Televisyen-Kopi-O-Kosong-Eco-Pack-(100-sachets-x-1-Pack)-Kopi-O-Kluang-Cap-TV-i.25563366.498280783?sp_atk=72da7cb5-8cca-435e-8fb7-44f1f0289c18&xptdk=72da7cb5-8cca-435e-8fb7-44f1f0289c18")
+            time.sleep(3)
+            WebDriverWait(driver, 20).until(
+                EC.element_to_be_clickable(
+                    (By.XPATH, '//*[@id="modal"]/div[1]/div[1]/div/div[3]/div[1]/button'))).click()
+
+            email_tab = driver.find_element(By.NAME, "loginKey")
+            password_tab = driver.find_element(By.NAME, "password")
+
+            email_tab.send_keys("")
+            password_tab.send_keys("")
+            button = driver.find_element(By.XPATH,
+                                         '//*[@id="main"]/div/div[2]/div/div/div/div[2]/form/div/div[2]/button')
+            WebDriverWait(driver, 20).until(EC.element_to_be_clickable(
+                (By.XPATH, '//*[@id="main"]/div/div[2]/div/div/div/div[2]/form/div/div[2]/button')))
+            time.sleep(5)
+            button.click()
+            time.sleep(5)
+
+            title_shopee = driver.find_element(By.XPATH,
+                                               '//*[@id="main"]/div/div[2]/div[1]/div[1]/div/div/div[1]/span').text
+            price_shopee = driver.find_element(By.CSS_SELECTOR, 'div.pqTWkA').text
+
+            price_shopee = price_shopee.replace("RM", "").strip()
+
+            driver.quit()
+            return title_shopee, price_shopee
+        except Exception as error:
+            message = f"An exception occur in Shopee(coffee): \n{error}"
+            print(message)
+            return "", ""
 
     def scrape_coffe_lazada(self):
         try:

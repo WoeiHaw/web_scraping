@@ -10,6 +10,7 @@ import plotly.express as px
 import warnings
 import webbrowser
 import threading
+
 warnings.simplefilter(action='ignore', category=FutureWarning)
 
 
@@ -23,7 +24,9 @@ class Shoes_dashboard():
 
         my_skeachers = pd.read_csv(f"{filepath}skechers_shoes_MY.csv")
         sg_skeachers = pd.read_csv(f"{filepath}skechers_shoes_SG.csv")
-
+        unique_description = set(my_skeachers["Description"].unique().tolist() + sg_skeachers["Description"].unique().tolist())
+        unique_description = list(unique_description)
+        unique_description.sort()
         my_skeachers["Date"] = pd.to_datetime(my_skeachers["Date"], dayfirst=True)
         sg_skeachers["Date"] = pd.to_datetime(sg_skeachers["Date"], dayfirst=True)
         max_date_my = my_skeachers["Date"].max()
@@ -34,17 +37,17 @@ class Shoes_dashboard():
         my_skeachers_latest = my_skeachers.loc[my_skeachers["Date"] == max_date_my].copy()
         sg_skeachers_latest = sg_skeachers.loc[sg_skeachers["Date"] == max_date_sg].copy()
 
-        all_skechers_latest = my_skeachers_latest.merge(sg_skeachers_latest, how="outer", suffixes=("_my", "_sg"))
+        # all_skechers_latest = my_skeachers_latest.merge(sg_skeachers_latest, how="outer", suffixes=("_my", "_sg"))
+        #
+        # my_skeachers_latest.drop(["Date", "Link"], axis=1, inplace=True)
+        # sg_skeachers_latest.drop(["Date", "Link"], axis=1, inplace=True)
+        #
+        # compare_df = sg_skeachers_latest.merge(my_skeachers_latest, how="inner", on="Description")
+        # compare_df["Difference(RM)"] = compare_df["Price (RM)"] - compare_df["Price (SGD $)"] * 3.45
 
-        my_skeachers_latest.drop(["Date", "Link"], axis=1, inplace=True)
-        sg_skeachers_latest.drop(["Date", "Link"], axis=1, inplace=True)
-
-        comapre_df = sg_skeachers_latest.merge(my_skeachers_latest, how="inner", on="Description")
-        comapre_df["Difference(RM)"] = comapre_df["Price (RM)"] - comapre_df["Price (SGD $)"] * 3.45
-
-        item_num = {"Country": ["Malaysia", "Singapore"],
-                    "Number of items": [len(my_skeachers_latest), len(sg_skeachers_latest)]}
-        item_count_df = pd.DataFrame(item_num)
+        # item_num = {"Country": ["Malaysia", "Singapore"],
+        #             "Number of items": [len(my_skeachers_latest), len(sg_skeachers_latest)]}
+        # item_count_df = pd.DataFrame(item_num)
         self.app.layout = html.Div([
             dcc.Tabs([
                 dcc.Tab(
@@ -63,7 +66,7 @@ class Shoes_dashboard():
                         ),
                         dcc.Graph(id="my_line_comp"),
                         dcc.Graph(id="sg_line_comp"),
-                        html.H3("Please Select a metric"),
+                        html.H3("Please Select a Shoes"),
                         dcc.Dropdown(
                             id="metric_dropdown",
                             options=["Top 10 items(Malaysia cheaper)", "Top 10 items(Singapore cheaper)"],
@@ -96,8 +99,8 @@ class Shoes_dashboard():
                         html.H1(id="title", style={"text-align": "center"}),
                         dcc.Dropdown(
                             id="shoes_filter",
-                            options=all_skechers_latest["Description"].sort_values(),
-                            value=all_skechers_latest["Description"].sort_values().iloc[0],
+                            options=unique_description,
+                            value=unique_description[0],
                             className="dbc"
                         ),
                         dbc.Row([
@@ -140,29 +143,53 @@ class Shoes_dashboard():
             Output("data_table", "columns"),
             Output("data_table", "data"),
             Output("data_table", "selected_rows"),
-            Input("metric_dropdown", "value")
+            Output("bar_graph", "figure"),
+            Input("metric_dropdown", "value"),
+            Input("date_picker", "end_date"),
         )
-        def get_data_table(metric):
+        def get_data_table(metric, end_date):
             global df
 
+            my_skeachers_end_date = my_skeachers.loc[my_skeachers["Date"] == end_date].copy()
+            sg_skeachers_end_date = sg_skeachers.loc[sg_skeachers["Date"] == end_date].copy()
+
+            my_skeachers_end_date.drop(["Date", "Link"], axis=1, inplace=True)
+            sg_skeachers_end_date.drop(["Date", "Link"], axis=1, inplace=True)
+
+            compare_df = sg_skeachers_end_date.merge(my_skeachers_end_date, how="inner", on="Description")
+            compare_df["Difference(RM)"] = compare_df["Price (RM)"] - compare_df["Price (SGD $)"] * 3.45
+
+            item_num = {"Country": ["Malaysia", "Singapore"],
+                        "Number of items": [len(my_skeachers_end_date), len(sg_skeachers_end_date)]}
+            item_count_df = pd.DataFrame(item_num)
+
             if metric == "Top 10 items(Malaysia cheaper)":
-                df = comapre_df.sort_values(by="Difference(RM)")[:10].copy()
+                df = compare_df.sort_values(by="Difference(RM)")[:10].copy()
+
                 df = df.loc[df["Difference(RM)"] < 0]
+
                 # to temove negative sign
                 df["Difference(RM)"] = df["Difference(RM)"].apply(lambda x: round(x * -1, 2))
+
             else:
-                df = comapre_df.sort_values(by="Difference(RM)", ascending=False)[:10].copy()
+                df = compare_df.sort_values(by="Difference(RM)", ascending=False)[:10].copy()
                 df = df.loc[df["Difference(RM)"] > 0]
                 df = df.round(2)
 
             columns = [{"name": i, "id": i} for i in df.columns]
             data = df.to_dict("records")
-            return columns, data, [0]
+
+            bar_graph = px.bar(
+                item_count_df,
+                x="Country",
+                y="Number of items",
+
+            )
+            return columns, data, [0], bar_graph
 
         @self.app.callback(
             Output("my_line_comp", "figure"),
             Output("sg_line_comp", "figure"),
-            Output("bar_graph", "figure"),
             Input("data_table", "selected_rows"),
             Input("date_picker", "start_date"),
             Input("date_picker", "end_date"),
@@ -170,7 +197,7 @@ class Shoes_dashboard():
         def compare_line_graph(selected_row, start_date, end_date):
             description = df.iloc[selected_row[0]]["Description"]
             my_line = px.line(
-                my_skeachers.query("Description == @description and  @start_date<Date<@end_date"),
+                my_skeachers.query("Description == @description and  @start_date <= Date<= @end_date"),
                 x="Date",
                 y="Price (RM)",
                 title=f"{description} Price (RM)"
@@ -184,7 +211,7 @@ class Shoes_dashboard():
             )
 
             sg_line = px.line(
-                sg_skeachers.query("Description == @description and  @start_date<Date<@end_date"),
+                sg_skeachers.query("Description == @description and  @start_date<= Date <= @end_date"),
                 x="Date",
                 y="Price (SGD $)",
                 title=f"{description} Price (SGD $)",
@@ -195,14 +222,7 @@ class Shoes_dashboard():
                     "font_size": 30
                 })
 
-            bar_graph = px.bar(
-                item_count_df,
-                x="Country",
-                y="Number of items",
-
-            )
-
-            return my_line, sg_line, bar_graph
+            return my_line, sg_line
 
         @self.app.callback(
             Output("compare_table", "columns"),
@@ -219,9 +239,8 @@ class Shoes_dashboard():
             shoes_data_my = my_skeachers_latest.loc[my_skeachers_latest["Description"] == shoes]
             shoes_data_sg = sg_skeachers_latest.loc[sg_skeachers_latest["Description"] == shoes]
 
-
-            price_my = "-" if len(shoes_data_my) ==0 else shoes_data_my["Price (RM)"].values[0]
-            price_sg = "-" if len(shoes_data_sg) ==0 else shoes_data_sg["Price (SGD $)"].values[0]
+            price_my = "-" if len(shoes_data_my) == 0 else shoes_data_my["Price (RM)"].values[0]
+            price_sg = "-" if len(shoes_data_sg) == 0 else shoes_data_sg["Price (SGD $)"].values[0]
             max_price_sg = "-" if len(sg_skeachers.loc[sg_skeachers["Description"] == shoes]) == 0 else \
                 sg_skeachers[sg_skeachers["Description"] == shoes]["Price (SGD $)"].max()
             min_price_sg = "-" if len(sg_skeachers.loc[sg_skeachers["Description"] == shoes]) == 0 else \
