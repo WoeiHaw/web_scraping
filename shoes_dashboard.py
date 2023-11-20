@@ -24,7 +24,8 @@ class Shoes_dashboard():
 
         my_skeachers = pd.read_csv(f"{filepath}skechers_shoes_MY.csv")
         sg_skeachers = pd.read_csv(f"{filepath}skechers_shoes_SG.csv")
-        unique_description = set(my_skeachers["Description"].unique().tolist() + sg_skeachers["Description"].unique().tolist())
+        unique_description = set(
+            my_skeachers["Description"].unique().tolist() + sg_skeachers["Description"].unique().tolist())
         unique_description = list(unique_description)
         unique_description.sort()
         my_skeachers["Date"] = pd.to_datetime(my_skeachers["Date"], dayfirst=True)
@@ -105,7 +106,7 @@ class Shoes_dashboard():
                         ),
                         dbc.Row([
                             dbc.Col([
-                                html.Img(id="img_path"),
+                                dbc.Card([html.Img(id="img_path", style={"width": f"{100*5/12}%", "height": f"{100*5/12}%"})]),
                                 dbc.Card([dash_table.DataTable(
                                     id="compare_table",
                                     style_header={
@@ -119,18 +120,18 @@ class Shoes_dashboard():
                                         "font-familly": "Arial"
                                     },
                                 )]),
-                                html.Div([
+                                dbc.Card([html.Div([
                                     html.H3("Link (Singapore)"),
                                     html.P(id="sg_link"),
                                     html.H3("Link (Malaysia)"),
                                     html.P(id="my_link")
-                                ])
-                            ], width=4),
+                                ])])
+                            ], width=5),
 
                             dbc.Col([
-                                dcc.Graph(id="sg_line"),
-                                dcc.Graph(id="my_line")
-                            ], width=8)
+                            dcc.Graph(id="sg_line"),
+                            dcc.Graph(id="my_line")
+                            ], width=7)
                         ])
 
                     ]
@@ -164,8 +165,8 @@ class Shoes_dashboard():
                         "Number of items": [
                             my_skeachers.query("@start_date<=Date <= @end_date")["Description"].nunique(),
                             sg_skeachers.query("@start_date<=Date <= @end_date")["Description"].nunique()
-                                            ]
-                            # [len(my_skeachers_end_date), len(sg_skeachers_end_date)]
+                        ]
+                        # [len(my_skeachers_end_date), len(sg_skeachers_end_date)]
                         }
             item_count_df = pd.DataFrame(item_num)
 
