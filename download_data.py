@@ -25,7 +25,7 @@ class Download_data():
         file_list = drive.ListFile({'q': folder_query}).GetList()
         fileName = ["Darlie Toothpaste", "Dettol Shower Gel", "House Price JB", "House Price kl",
                     "kopi o price", "Malaysia Job", "Nivea Man", "sg rental",
-                    "shampoo price", "Singapore Job", "skechers_shoes_MY", "skechers_shoes_SG"]
+                    "shampoo price", "Singapore Job", "skechers_shoes_MY", "skechers_shoes_SG","sg rental(processed)"]
 
         for file in file_list:
             if file["title"].replace(".csv","") in fileName:

@@ -35,7 +35,7 @@ class Shoes():
                 while not isStop:
                     driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
                     driver.implicitly_wait(2)
-                    isStop = False if count <= 30 else True
+                    isStop = False if count <= 100 else True
                     try:
                         if driver.find_element(By.XPATH,
                                                '//div[@class="show-more tt_item_all_js"]').text == "NO MORE PRODUCTS":

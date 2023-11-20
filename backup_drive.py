@@ -12,7 +12,7 @@ class Backup_drive():
 
         fileName = ["Darlie Toothpaste","Dettol Shower Gel","House Price JB","House Price kl",
                     "kopi o price","Malaysia Job","Nivea Man","sg rental",
-                    "shampoo price","Singapore Job","skechers_shoes_MY","skechers_shoes_SG"]
+                    "shampoo price","Singapore Job","skechers_shoes_MY","skechers_shoes_SG","sg rental(processed)"]
         file_list = drive.ListFile({'q': "'{}' in parents and trashed=false".format("1JEp79t-I3f0QI-3mgLQ1phTh-ht26vqy")}).GetList()
 
         try:

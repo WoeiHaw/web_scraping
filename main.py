@@ -15,6 +15,7 @@ from shoes_dashboard import Shoes_dashboard
 from grocery_item_dashboard import Grocery_dashboard
 from shoes_image import Shoes_image
 from singapore_rental_dashboard import Sg_rental_dashboard
+from processed_sg_rental import Process_data
 import time
 from dash import Dash, html
 
@@ -52,6 +53,7 @@ def my_job():
 
 def scrape_sg_room():
     Sg_room("../../data/sg rental.csv")
+    Process_data("../../data/")
 
 
 def scrape_coffee():
@@ -123,6 +125,7 @@ def back_up():
         "../../data/Singapore Job.csv",
         "../../data/House Price kl.csv",
         "../../data/House Price JB.csv",
+        "../../data/sg rental(processed).csv",
     ]
     backup_location = [
         "../../Data_back_up/kopi o price.csv",
@@ -137,9 +140,9 @@ def back_up():
         "../../Data_back_up/Singapore Job.csv",
         "../../Data_back_up/House Price kl.csv",
         "../../Data_back_up/House Price JB.csv",
+        "../../Data_back_up/sg rental(processed).csv"
     ]
     Backup(file_location, backup_location)
-    pass
 
 
 # ---------------------------- UI SETUP FOR WEB SCRAPING ------------------------------- #
@@ -313,6 +316,7 @@ def web_scrape_main_gui():
 
 
 # ---------------------------- UI SETUP FOR DASHBOARD ------------------------------- #
+
 def get_shoes_dashboard():
     shoes_dashboard = Shoes_dashboard("../../data/")
     shoes_dashboard.run()
@@ -323,8 +327,11 @@ def get_grocery_dashboard():
     grocery_dashboard = Grocery_dashboard("../../data/")
     grocery_dashboard.run()
 
+
 def get_sg_rental_dashboard():
     Sg_rental_dashboard("../../data/")
+
+
 def dashboard_menu():
     global window
     window.destroy()
@@ -343,8 +350,8 @@ def dashboard_menu():
     button_grocery_dashboard.grid(row=2, column=0, pady=10, columnspan=2)
 
     button_sg_rental_dashboard = Button(text="Singapore Room Rental Dashboard", font=(FONT_NAME, 20), bg=COLOR2,
-                                      command=get_sg_rental_dashboard
-                                      )
+                                        command=get_sg_rental_dashboard
+                                        )
     button_sg_rental_dashboard.grid(row=3, column=0, pady=10, columnspan=2)
 
     button_exit = Button(text="Exit Programme", font=(FONT_NAME, 20), bg=COLOR3, command=window.destroy)

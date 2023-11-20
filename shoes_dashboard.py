@@ -146,8 +146,9 @@ class Shoes_dashboard():
             Output("bar_graph", "figure"),
             Input("metric_dropdown", "value"),
             Input("date_picker", "end_date"),
+            Input("date_picker", "start_date"),
         )
-        def get_data_table(metric, end_date):
+        def get_data_table(metric, end_date, start_date):
             global df
 
             my_skeachers_end_date = my_skeachers.loc[my_skeachers["Date"] == end_date].copy()
@@ -160,7 +161,12 @@ class Shoes_dashboard():
             compare_df["Difference(RM)"] = compare_df["Price (RM)"] - compare_df["Price (SGD $)"] * 3.45
 
             item_num = {"Country": ["Malaysia", "Singapore"],
-                        "Number of items": [len(my_skeachers_end_date), len(sg_skeachers_end_date)]}
+                        "Number of items": [
+                            my_skeachers.query("@start_date<=Date <= @end_date")["Description"].nunique(),
+                            sg_skeachers.query("@start_date<=Date <= @end_date")["Description"].nunique()
+                                            ]
+                            # [len(my_skeachers_end_date), len(sg_skeachers_end_date)]
+                        }
             item_count_df = pd.DataFrame(item_num)
 
             if metric == "Top 10 items(Malaysia cheaper)":
