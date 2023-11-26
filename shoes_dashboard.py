@@ -159,7 +159,7 @@ class Shoes_dashboard():
             sg_skeachers_end_date.drop(["Date", "Link"], axis=1, inplace=True)
 
             compare_df = sg_skeachers_end_date.merge(my_skeachers_end_date, how="inner", on="Description")
-            compare_df["Difference(RM)"] = compare_df["Price (RM)"] - compare_df["Price (SGD $)"] * 3.45
+            compare_df["Difference(RM)"] = compare_df["Price (RM)"] - compare_df["Price (SGD $)"] * 3.47
 
             item_num = {"Country": ["Malaysia", "Singapore"],
                         "Number of items": [

@@ -107,7 +107,7 @@ class Sg_room():
             data_save_dict["Date"] = TODAY_DATE
             data_save_dict["Agent Fee(SGD)"] = agent_fee
             data_save_dict["Room Type"] = room_type
-            data_save_dict["Live_in Owner"] = room_type
+            data_save_dict["Live_in Owner"] = live_in_owner
             data_save_dict["Aircon"] = aircon
             data_save_dict["Property Type"] = property_type
             data_save_dict["Location"] = location

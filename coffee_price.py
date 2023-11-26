@@ -23,7 +23,7 @@ class Coffee:
         self.options = webdriver.ChromeOptions()
         check = Check_data(self.filename)
         if check.is_today_empty:
-            # self.shopee_title, self.shopee_price = self.scrape_coffe_shopee()
+            self.shopee_title, self.shopee_price = self.scrape_coffe_shopee()
             self.lazada_title, self.lazada_price = self.scrape_coffe_lazada()
             self.pg_title, self.pg_price = self.scrape_coffe_pgmall()
 

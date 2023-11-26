@@ -8,6 +8,7 @@ from dash_bootstrap_templates import load_figure_template
 import plotly.express as px
 import webbrowser
 import threading
+import numpy as np
 
 
 class Sg_rental_dashboard():
@@ -17,8 +18,6 @@ class Sg_rental_dashboard():
         app = Dash(__name__, external_stylesheets=[dbc.themes.SLATE, dbc_css])
 
         rental_df = pd.read_csv(path + "sg rental(processed).csv")
-
-
 
         app.layout = html.Div([
             html.H1(["Singapore Rooms Rental Analysis "], style={"text-align": "center"}),
@@ -115,14 +114,21 @@ class Sg_rental_dashboard():
             else:
                 is_ascending = True
                 title_components = "Lowest"
-            area_df = df.groupby("Area")["Rental(SGD)"].mean().sort_values(ascending=is_ascending)[0:10]
+            # area_df = df.groupby("Area")["Rental(SGD)"].median().sort_values(ascending=is_ascending)[0:10]
+            area_df = df.groupby("Area").agg({"Rental(SGD)": [np.median, "count"]})
+            area_df.columns = area_df.columns.droplevel()
+            area_df = area_df.sort_values(by="median", ascending=is_ascending)[0:10]
 
             bar = px.bar(
+                area_df,
                 x=area_df.index,
-                y=area_df.values,
-                title=f"Top 10 {title_components} Rental by Area"
+                y="median",
+                hover_data=["count"],
+                title=f"Top 10 {title_components}(median) Rental by Area"
             )
             bar.update_layout(
+                xaxis_title="Area",
+                yaxis_title="Price (SGD)",
                 title={
                     "x": 0.5,
                     "y": .87,
