@@ -93,7 +93,7 @@ class JobDashboard:
 
         sg_df["Posted Date"] = pd.to_datetime(sg_df["Posted Date"], format="mixed")
         my_df["Posted Date"] = pd.to_datetime(my_df["Posted Date"], format="mixed")
-        print(sg_df["Posted Date"])
+
         app.layout = html.Div([
             html.Div(id="title"),
             dbc.Card([
@@ -224,6 +224,18 @@ class JobDashboard:
                     }
                 },
             )
+            burst.update_layout(
+                xaxis_title='Number of Advertisements',
+                yaxis_title='Region',
+                coloraxis_showscale=False,
+                title={
+                    "x": 0.5,
+                    "y": .87,
+                    "font": {
+                        "size": 20
+                    }
+                },
+            )
             bar_title = px.bar(
                 x=df['Title'].value_counts()[:10].index,
                 y=df['Title'].value_counts()[:10].values,
@@ -247,7 +259,7 @@ class JobDashboard:
                 title="Percentage of Job Type"
             )
             count_word = count_frequency(df["Key Words"])
-            num_words_show = 100
+
             count_word_df = pd.DataFrame(count_word.keys(), columns=["Words"])
             count_word_df["Count"] = count_word.values()
             #     count_word_df["Count"] = round(count_word_df["Count"]/count_word_df["Count"].iloc[:num_words_show].sum()*200)

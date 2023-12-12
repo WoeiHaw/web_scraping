@@ -35,8 +35,8 @@ class Sg_rental_dashboard():
                 )]),
             dbc.Card([dcc.Graph(id="hist-chart", className="dbc")]),
             dbc.Row([
-                dbc.Col([dbc.Card(id="data-table")], width=3),
-                dbc.Col(dbc.Card([dcc.Graph(id="pie-chart")]), width=3),
+                dbc.Col([dbc.Card(id="data-table")], width=4),
+                dbc.Col(dbc.Card([dcc.Graph(id="burst-chart")]), width=4),
                 dbc.Col([dbc.Card([
                     dcc.RadioItems(
                         id="metrics",
@@ -45,7 +45,7 @@ class Sg_rental_dashboard():
                         inline=True,
                     ),
                     dcc.Graph(id="bar-chart")
-                ])], width=6),
+                ])], width=4),
 
             ])
         ])
@@ -53,7 +53,7 @@ class Sg_rental_dashboard():
         @app.callback(
             Output("hist-chart", "figure"),
             Output("data-table", "children"),
-            Output("pie-chart", "figure"),
+            Output("burst-chart", "figure"),
             Output("bar-chart", "figure"),
             Input("date-picker", "start_date"),
             Input("date-picker", "end_date"),
@@ -96,18 +96,27 @@ class Sg_rental_dashboard():
 
                 }
             )
-            region_df = df.groupby("Region").count()["Date"]
-            pie = px.pie(values=region_df.values, names=region_df.index, title='Number of Advertisements by Region')
-            pie.update_traces(textposition='inside', textinfo='percent+label')
-            pie.update_layout(
-                showlegend=False,
+            region_df = df.groupby(["Region", "Area"], as_index=False).count()
+            # pie = px.pie(values=region_df.values, names=region_df.index, title='Number of Advertisements by Region')
+            burst = px.sunburst(region_df,
+                                path=['Region', 'Area'],
+                                values='Date',
+                                title='Room Locations Distribution'
+                                )
+
+            # burst.update_traces(textposition='inside', textinfo='percent+label')
+            burst.update_layout(
+                xaxis_title='Number of Jobs',
+                yaxis_title='City',
+                coloraxis_showscale=False,
                 title={
                     "x": 0.5,
                     "y": .87,
                     "font": {
                         "size": 20
                     }
-                }, )
+                },
+            )
             if metrics == "Highest Price":
                 is_ascending = False
                 title_components = "Highest"
@@ -136,7 +145,7 @@ class Sg_rental_dashboard():
                         "size": 20
                     }
                 }, )
-            return hist, stat_table, pie, bar
+            return hist, stat_table, burst, bar
 
         thread = threading.Thread(target=app.run_server,
                                   kwargs={"port": 4002, "debug": False, "use_reloader": False})
