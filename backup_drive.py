@@ -12,16 +12,19 @@ class Backup_drive():
 
         fileName = ["Darlie Toothpaste", "Dettol Shower Gel", "House Price JB", "House Price kl",
                     "kopi o price", "Malaysia Job", "Nivea Man", "sg rental",
-                    "shampoo price", "Singapore Job", "skechers_shoes_MY", "skechers_shoes_SG", "sg rental(processed)"]
-        file_list = drive.ListFile(
-            {'q': "'{}' in parents and trashed=false".format("1JEp79t-I3f0QI-3mgLQ1phTh-ht26vqy")}).GetList()
+                    "shampoo price", "Singapore Job", "skechers_shoes_MY", "skechers_shoes_SG", "sg rental(processed)",
+                    "Singapore Job(Processed)", "Malaysia Job(Processed)"]
+        folder_list = drive.ListFile(
+            {'q': "title='Data_back_up'  and mimeType='application/vnd.google-apps.folder' and trashed=false"}).GetList()
+        folder_id = folder_list[0]['id']
+        file_query = f"'{folder_id}' in parents and trashed=false"
+        file_list = drive.ListFile({'q': file_query}).GetList()
 
-        try:
-            for file1 in file_list:
-                if file1['title'].replace(".csv", "") in fileName:
-                    file1.Delete()
-        except:
-            pass
+
+        for file1 in file_list:
+
+            if file1['title'].replace(".csv", "") in fileName:
+                file1.Delete()
 
         for name in fileName:
             f = drive.CreateFile({'title': f"{name}.csv",

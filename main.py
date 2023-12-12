@@ -125,6 +125,8 @@ def back_up():
         "../../data/House Price kl.csv",
         "../../data/House Price JB.csv",
         "../../data/sg rental(processed).csv",
+        "../../data/Singapore Job(Processed).csv",
+        "../../data/Malaysia Job(Processed).csv"
     ]
     backup_location = [
         "../../Data_back_up/kopi o price.csv",
@@ -139,7 +141,9 @@ def back_up():
         "../../Data_back_up/Singapore Job.csv",
         "../../Data_back_up/House Price kl.csv",
         "../../Data_back_up/House Price JB.csv",
-        "../../Data_back_up/sg rental(processed).csv"
+        "../../Data_back_up/sg rental(processed).csv",
+        "../../Data_back_up/Singapore Job(Processed).csv",
+        "../../Data_back_up/Malaysia Job(Processed).csv"
     ]
     Backup(file_location, backup_location)
 

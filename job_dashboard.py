@@ -265,7 +265,7 @@ class JobDashboard:
                 backgroundColor='#001f00',
                 shuffle=False,
                 rotateRatio=0.0,
-                shrinkToFit=False,
+                shrinkToFit=True,
                 drawOutOfBound=False,
                 shape='circle',
                 hover=True,

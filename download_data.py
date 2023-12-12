@@ -20,12 +20,21 @@ class Download_data():
         local_folder_path = '../../data'
         os.makedirs(local_folder_path, exist_ok=True)
 
-        # List files in the specified folder
-        folder_query = f"'{folder_id}' in parents"
-        file_list = drive.ListFile({'q': folder_query}).GetList()
+
+        # folder_query = f"'{folder_id}' in parents"
+        # file_list = drive.ListFile({'q': folder_query}).GetList()
+
         fileName = ["Darlie Toothpaste", "Dettol Shower Gel", "House Price JB", "House Price kl",
                     "kopi o price", "Malaysia Job", "Nivea Man", "sg rental",
-                    "shampoo price", "Singapore Job", "skechers_shoes_MY", "skechers_shoes_SG","sg rental(processed)"]
+                    "shampoo price", "Singapore Job", "skechers_shoes_MY", "skechers_shoes_SG","sg rental(processed)",
+                    "Singapore Job(Processed)","Malaysia Job(Processed)"]
+
+        # List files in the specified folder
+        folder_list = drive.ListFile(
+            {'q': "title='Data_back_up'  and mimeType='application/vnd.google-apps.folder' and trashed=false"}).GetList()
+        folder_id = folder_list[0]['id']
+        file_query = f"'{folder_id}' in parents and trashed=false"
+        file_list = drive.ListFile({'q': file_query}).GetList()
 
         for file in file_list:
             if file["title"].replace(".csv","") in fileName:
