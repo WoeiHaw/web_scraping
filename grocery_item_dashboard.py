@@ -48,7 +48,7 @@ class Grocery_dashboard():
 
             ]),
             dbc.Card([dcc.Graph(id="line_graph", className="dbc")]),
-            dbc.Card([dbc.Col([dbc.Card(id="data-table")]),]),
+            dbc.Card([dbc.Col([dbc.Card(id="data-table")]), ]),
             dbc.Card([dbc.Col([dbc.Card([dcc.Graph(id="pie-chart")])])])
         ])
 
@@ -58,7 +58,8 @@ class Grocery_dashboard():
             Output("date_picker", "max_date_allowed"),
             Output("date_picker", "start_date"),
             Output("date_picker", "end_date"),
-            Input("data-dropdown", "value")
+            Input("data-dropdown", "value"),
+
         )
         def process_selectdate(data):
             global grocery_data, y_data, table_column
@@ -102,6 +103,7 @@ class Grocery_dashboard():
             max_date = grocery_data["Date"].max()
             start_date = grocery_data.iloc[-30]["Date"]
             end_date = grocery_data["Date"].max()
+
             return dashboard_title.title(), min_date, max_date, start_date, end_date
 
         @self.app.callback(
@@ -113,9 +115,18 @@ class Grocery_dashboard():
         )
         def price_dashbord(start_date, end_date):
             df = grocery_data.query("@start_date<= Date <= @end_date")[y_data]
-
-            # line graph
-            # print("Date" in y_data)
+            y_data_removed = []
+            table_column_removed = []
+            for column in df:
+                if df[column].isnull().sum() == len(df):
+                    df.drop(columns=column, inplace=True)
+                    y_data.remove(column)
+                    y_data_removed.append(column)
+                    # to remove 'price'
+                    index = column.find('Price')
+                    platform_name = column[:index].strip()
+                    table_column.remove(platform_name)
+                    table_column_removed.append(platform_name)
 
             y_data.remove("Date")
 
@@ -149,8 +160,10 @@ class Grocery_dashboard():
             # data table
             mean = df.groupby("for_groupby", as_index=False).mean(numeric_only=True)
             median = df.groupby("for_groupby", as_index=False).median(numeric_only=True)
+
             mode = df.groupby("for_groupby", as_index=False).agg(lambda x: x.value_counts().index[0])
             mode = mode[y_data]
+
             min_price = df.groupby("for_groupby", as_index=False).min(numeric_only=True)
             max_price = df.groupby("for_groupby", as_index=False).max(numeric_only=True)
             min_price_date = pd.DataFrame(columns=y_data)
@@ -241,6 +254,10 @@ class Grocery_dashboard():
             )
 
             y_data.append("Date")
+            for i in range(len(y_data_removed)):
+                y_data.append(y_data_removed[i])
+                table_column.append(table_column_removed[i])
+
             return line_chart, data_table, pie_chart
 
     def run(self):

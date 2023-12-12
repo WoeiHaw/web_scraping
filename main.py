@@ -16,8 +16,7 @@ from grocery_item_dashboard import Grocery_dashboard
 from shoes_image import Shoes_image
 from singapore_rental_dashboard import Sg_rental_dashboard
 from processed_sg_rental import Process_data
-import time
-from dash import Dash, html
+from job_dashboard import JobDashboard
 
 COLOR1 = "#FAF0E6"
 COLOR2 = "#B9B4C7"
@@ -331,7 +330,8 @@ def get_grocery_dashboard():
 def get_sg_rental_dashboard():
     Sg_rental_dashboard("../../data/")
 
-
+def get_job_dashboard():
+    JobDashboard("../../data/")
 def dashboard_menu():
     global window
     window.destroy()
@@ -353,6 +353,11 @@ def dashboard_menu():
                                         command=get_sg_rental_dashboard
                                         )
     button_sg_rental_dashboard.grid(row=3, column=0, pady=10, columnspan=2)
+
+    job_dashboard = Button(text="Data Science Job Dashboard", font=(FONT_NAME, 20), bg=COLOR2,
+                                        command=get_job_dashboard
+                                        )
+    job_dashboard.grid(row=4, column=0, pady=10, columnspan=2)
 
     button_exit = Button(text="Exit Programme", font=(FONT_NAME, 20), bg=COLOR3, command=window.destroy)
     button_exit.grid(row=8, column=0, pady=10)

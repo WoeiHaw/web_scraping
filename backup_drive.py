@@ -10,24 +10,23 @@ class Backup_drive():
         drive = GoogleDrive(gauth)
         path = "../../data/"
 
-        fileName = ["Darlie Toothpaste","Dettol Shower Gel","House Price JB","House Price kl",
-                    "kopi o price","Malaysia Job","Nivea Man","sg rental",
-                    "shampoo price","Singapore Job","skechers_shoes_MY","skechers_shoes_SG","sg rental(processed)"]
-        file_list = drive.ListFile({'q': "'{}' in parents and trashed=false".format("1JEp79t-I3f0QI-3mgLQ1phTh-ht26vqy")}).GetList()
+        fileName = ["Darlie Toothpaste", "Dettol Shower Gel", "House Price JB", "House Price kl",
+                    "kopi o price", "Malaysia Job", "Nivea Man", "sg rental",
+                    "shampoo price", "Singapore Job", "skechers_shoes_MY", "skechers_shoes_SG", "sg rental(processed)"]
+        file_list = drive.ListFile(
+            {'q': "'{}' in parents and trashed=false".format("1JEp79t-I3f0QI-3mgLQ1phTh-ht26vqy")}).GetList()
 
         try:
             for file1 in file_list:
-                if file1['title'].replace(".csv","") in fileName:
+                if file1['title'].replace(".csv", "") in fileName:
                     file1.Delete()
         except:
             pass
 
-
         for name in fileName:
-
             f = drive.CreateFile({'title': f"{name}.csv",
-                                  'mimeType':'text/csv',
-                                  "parents": [{"kind": "drive#fileLink","id": "1JEp79t-I3f0QI-3mgLQ1phTh-ht26vqy"}]})
+                                  'mimeType': 'text/csv',
+                                  "parents": [{"kind": "drive#fileLink", "id": "1JEp79t-I3f0QI-3mgLQ1phTh-ht26vqy"}]})
             f.SetContentFile(f"{path}{name}.csv")
             f.Upload()
 
@@ -38,5 +37,3 @@ class Backup_drive():
             # memory leak, therefore preventing its
             # deletion
             f = None
-
-

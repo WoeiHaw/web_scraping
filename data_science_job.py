@@ -7,7 +7,7 @@ import numpy as np
 from read_csv import Read_csv
 from save_data import Save_data
 from selenium.common.exceptions import NoSuchWindowException, WebDriverException
-
+from process_job_data import ProcessData
 now = datetime.now()
 TODAY_DATE = now.strftime("%d-%m-%Y")
 
@@ -55,7 +55,14 @@ class Job_info():
             if len(job_info_dict) != 0:
                 Save_data(filename, job_info_dict, True)
 
+
         driver.quit()
+        country_name = "Singapore" if country == "sg" else "Malaysia"
+        index = filename.find(country_name)
+        path = filename[:index]
+
+        print(path)
+        ProcessData(path, country_name).process_data()
 
     def sg_job_page(self, page, jobid_list, country, driver):
 

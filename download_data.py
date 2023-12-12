@@ -32,6 +32,7 @@ class Download_data():
 
                 # Download each file and save it to the local folder
                 local_file_path = os.path.join(local_folder_path, file['title'])
+
                 file.GetContentFile(local_file_path)
 
                 print(f"Downloaded: {file['title']}")
