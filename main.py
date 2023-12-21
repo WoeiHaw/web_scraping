@@ -17,6 +17,7 @@ from shoes_image import Shoes_image
 from singapore_rental_dashboard import Sg_rental_dashboard
 from processed_sg_rental import Process_data
 from job_dashboard import JobDashboard
+from house_price_dashboard import HousePriceDashBoard
 
 COLOR1 = "#FAF0E6"
 COLOR2 = "#B9B4C7"
@@ -126,7 +127,9 @@ def back_up():
         "../../data/House Price JB.csv",
         "../../data/sg rental(processed).csv",
         "../../data/Singapore Job(Processed).csv",
-        "../../data/Malaysia Job(Processed).csv"
+        "../../data/Malaysia Job(Processed).csv",
+        "../../data/House Price kl(Processed).csv",
+        "../../data/House Price JB(Processed).csv"
     ]
     backup_location = [
         "../../Data_back_up/kopi o price.csv",
@@ -143,7 +146,9 @@ def back_up():
         "../../Data_back_up/House Price JB.csv",
         "../../Data_back_up/sg rental(processed).csv",
         "../../Data_back_up/Singapore Job(Processed).csv",
-        "../../Data_back_up/Malaysia Job(Processed).csv"
+        "../../Data_back_up/Malaysia Job(Processed).csv",
+        "../../Data_back_up/House Price kl(Processed).csv",
+        "../../Data_back_up/House Price JB(Processed).csv"
     ]
     Backup(file_location, backup_location)
 
@@ -334,8 +339,15 @@ def get_grocery_dashboard():
 def get_sg_rental_dashboard():
     Sg_rental_dashboard("../../data/")
 
+
 def get_job_dashboard():
     JobDashboard("../../data/")
+
+
+def get_house_price_dashboard():
+    HousePriceDashBoard("../../data/")
+
+
 def dashboard_menu():
     global window
     window.destroy()
@@ -359,9 +371,14 @@ def dashboard_menu():
     button_sg_rental_dashboard.grid(row=3, column=0, pady=10, columnspan=2)
 
     job_dashboard = Button(text="Data Science Job Dashboard", font=(FONT_NAME, 20), bg=COLOR2,
-                                        command=get_job_dashboard
-                                        )
+                           command=get_job_dashboard
+                           )
     job_dashboard.grid(row=4, column=0, pady=10, columnspan=2)
+
+    houae_dashboard = Button(text="House Price Dashboard", font=(FONT_NAME, 20), bg=COLOR2,
+                             command=get_house_price_dashboard
+                             )
+    houae_dashboard.grid(row=5, column=0, pady=10, columnspan=2)
 
     button_exit = Button(text="Exit Programme", font=(FONT_NAME, 20), bg=COLOR3, command=window.destroy)
     button_exit.grid(row=8, column=0, pady=10)

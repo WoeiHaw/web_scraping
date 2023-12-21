@@ -97,14 +97,17 @@ class Sg_rental_dashboard():
                 }
             )
             region_df = df.groupby(["Region", "Area"], as_index=False).count()
-            # pie = px.pie(values=region_df.values, names=region_df.index, title='Number of Advertisements by Region')
+            region_df.rename(columns={"Date": "Count"}, inplace=True)
+            sum_count = region_df["Count"].sum()
+            region_df["Percent"] = round((region_df["Count"]/sum_count)*100,2)
+
             burst = px.sunburst(region_df,
                                 path=['Region', 'Area'],
-                                values='Date',
-                                title='Room Locations Distribution'
+                                values='Percent',
+                                title='Room Locations Distribution',
+                                hover_data=['Count']
                                 )
 
-            # burst.update_traces(textposition='inside', textinfo='percent+label')
             burst.update_layout(
                 xaxis_title='Number of Jobs',
                 yaxis_title='City',

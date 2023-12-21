@@ -16,6 +16,7 @@ warnings.filterwarnings("ignore", category=UserWarning)
 class JobDashboard:
     def __init__(self, path):
         def process_data(dataframe):
+
             mask_type1 = dataframe["Job Type"] == "Full-Time"
             mask_type2 = dataframe["Job Type"] == "Temporary"
             mask_type3 = dataframe["Job Type"] == "Contract"
@@ -35,13 +36,20 @@ class JobDashboard:
             mask4 = dataframe["Company Name"] == "Government Technology Agency of Singapore (GovTech)"
             mask5 = dataframe["Company Name"] == "Oversea-Chinese Banking Corporation Ltd "
             mask6 = dataframe["Company Name"] == "Agency for Science, Technology and Research (A*STAR)"
+            mask7 = dataframe["Company Name"] == "Oversea-Chinese Banking Corporation Ltd"
 
             dataframe.loc[mask, "Company Name"] = "PERSOLKELLY Singapore Pte Ltd"
             dataframe.loc[mask2, "Company Name"] = "ST Engineering Training & Simulation Systems"
             dataframe.loc[mask3, "Company Name"] = "QUESS SINGAPORE"
             dataframe.loc[mask4, "Company Name"] = "GovTech"
-            dataframe.loc[mask5, "Company Name"] = "OCBC Singapore"
+            dataframe.loc[mask5, "Company Name"] = "OCBC (Singapore)"
             dataframe.loc[mask6, "Company Name"] = "A * STAR"
+            dataframe.loc[mask7, "Company Name"] = "OCBC (Singapore)"
+
+            dataframe["Company Name"] = dataframe["Company Name"].apply(
+                lambda x: x.replace("PRIVATE LIMITED", "").replace("Pte Ltd", "").replace("Pte. Ltd.", "")
+                .replace("PTE. LTD.", "").replace("Sdn Bhd", "").replace("Berhad", "").replace("Bhd", "").strip()
+            )
             return dataframe
 
         def count_frequency(tokens):
@@ -88,7 +96,7 @@ class JobDashboard:
         sg_df["Title"] = sg_df["Title"].apply(process_job_title)
         my_df["Title"] = my_df["Title"].apply(process_job_title)
 
-        sg_df["Posted Date"] = sg_df["Posted Date"].apply(lambda x : x.replace("-","/"))
+        sg_df["Posted Date"] = sg_df["Posted Date"].apply(lambda x: x.replace("-", "/"))
         my_df["Posted Date"] = my_df["Posted Date"].apply(lambda x: x.replace("-", "/"))
 
         sg_df["Posted Date"] = pd.to_datetime(sg_df["Posted Date"], format="mixed")
@@ -206,9 +214,10 @@ class JobDashboard:
                 }, )
 
             burst_df = df.groupby(["State/Region", "Country/Location"], as_index=False)["Posted Date"].count()
+            burst_df.rename(columns={"Posted Date":"count"},inplace=True)
             burst = px.sunburst(burst_df,
                                 path=['State/Region', 'Country/Location'],
-                                values='Posted Date',
+                                values='count',
                                 title='Job Locations Distribution',
                                 )
 
@@ -258,6 +267,16 @@ class JobDashboard:
                 hole=0.5,
                 title="Percentage of Job Type"
             )
+            # pie.update_traces(textposition='outside', textinfo='percent+label')
+            pie.update_layout(
+                title={
+                    "x": 0.5,
+                    "y": .87,
+                    "font": {
+                        "size": 20
+                    }
+                }
+            )
             count_word = count_frequency(df["Key Words"])
 
             count_word_df = pd.DataFrame(count_word.keys(), columns=["Words"])
@@ -272,7 +291,7 @@ class JobDashboard:
 
                 list=count_word_word_cloud,
                 width=530, height=450,
-                gridSize=16,
+                gridSize=10,
                 color='#f0f0c0',
                 backgroundColor='#001f00',
                 shuffle=False,

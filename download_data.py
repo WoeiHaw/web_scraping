@@ -27,7 +27,7 @@ class Download_data():
         fileName = ["Darlie Toothpaste", "Dettol Shower Gel", "House Price JB", "House Price kl",
                     "kopi o price", "Malaysia Job", "Nivea Man", "sg rental",
                     "shampoo price", "Singapore Job", "skechers_shoes_MY", "skechers_shoes_SG","sg rental(processed)",
-                    "Singapore Job(Processed)","Malaysia Job(Processed)"]
+                    "Singapore Job(Processed)","Malaysia Job(Processed)","House Price JB(Processed)","House Price kl(Processed)"]
 
         # List files in the specified folder
         folder_list = drive.ListFile(

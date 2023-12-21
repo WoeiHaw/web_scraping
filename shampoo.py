@@ -43,18 +43,21 @@ class Shapoo():
                 self.watson_title, self.watson_price = self.watson()
                 self.data_save_dict = {"Watson Title": [self.watson_title],
                                        "Watson Price": [self.watson_price]}
+                Save_data(self.filename, self.data_save_dict, check.is_today_empty)
 
             if ("Guardian Title" in check.nan_column) | ("Guardian Price" in check.nan_column):
                 self.guardian_title, self.guardian_price = self.guardian()
                 self.data_save_dict = {"Guardian Title": [self.guardian_title],
                                        "Guardian Price": [self.guardian_price]}
+                Save_data(self.filename, self.data_save_dict, check.is_today_empty)
 
             if ("Lotus Title" in check.nan_column) | ("Lotus Price" in check.nan_column):
                 self.lotus_title, self.lotus_price = self.lotus()
                 self.data_save_dict = {"Lotus Title": [self.lotus_title],
                                        "Lotus Price": [self.lotus_price]}
+                Save_data(self.filename, self.data_save_dict, check.is_today_empty)
 
-            Save_data(self.filename, self.data_save_dict, check.is_today_empty)
+            # Save_data(self.filename, self.data_save_dict, check.is_today_empty)
 
     def watson(self):
         try:

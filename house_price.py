@@ -8,7 +8,7 @@ import time
 from read_csv import Read_csv
 from save_data import Save_data
 from selenium.common.exceptions import NoSuchWindowException, WebDriverException
-
+from process_house_price import ProcessHousePrice
 now = datetime.now()
 TODAY_DATE = now.strftime("%d-%m-%Y")
 service = Service()
@@ -120,7 +120,7 @@ class House_price():
 
         driver = webdriver.Chrome(service=self.service, options=self.options)
 
-        for page in range(1, 51):
+        for page in range(1,2):
             house_link = []
             data_to_save = {
                 "Date": [],
@@ -174,3 +174,4 @@ class House_price():
                 Save_data(filename, data_to_save, True)
 
         driver.quit()
+        ProcessHousePrice("../../data/", "JB" if place == "johor+bahru" else "kl").process()

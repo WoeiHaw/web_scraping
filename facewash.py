@@ -42,8 +42,10 @@ class Facewash():
                 self.lazada_title, self.lazada_price = self.lazada()
                 self.data_save_dict = {"Guardian Title":[self.lazada_title],
                                        "Guardian Price":[self.lazada_price]}
+                print(self.data_save_dict)
                 # self.data_save_dict["Guardian Title"].append(self.lazada_title)
                 # self.data_save_dict["Guardian Price"].append(self.lazada_price)
+                Save_data(self.filename, self.data_save_dict, check.is_today_empty)
 
             if ("Aeon Title" in check.nan_column) | ("Aeon Price" in check.nan_column):
                 self.aeon_title, self.aeon_price = self.aeon()
@@ -51,6 +53,7 @@ class Facewash():
                                        "Aeon Price": [self.aeon_price]}
                 # self.data_save_dict["Aeon Title"].append(self.aeon_title)
                 # self.data_save_dict["Aeon Price"].append(self.aeon_price)
+                Save_data(self.filename, self.data_save_dict, check.is_today_empty)
 
             if ("Watson Title" in check.nan_column) | ("Watson Price" in check.nan_column):
                 self.watson_title, self.watson_price = self.watson()
@@ -58,15 +61,17 @@ class Facewash():
                                        "Watson Price": [self.watson_price]}
                 # self.data_save_dict["Watson Title"].append(self.watson_title)
                 # self.data_save_dict["Watson Price"].append(self.watson_price)
+                Save_data(self.filename, self.data_save_dict, check.is_today_empty)
 
-            Save_data(self.filename, self.data_save_dict, check.is_today_empty)
+            # Save_data(self.filename, self.data_save_dict, check.is_today_empty)
 
     def lazada(self):
         try:
             driver = webdriver.Chrome(service=self.service, options=self.options)
             driver.get(
                 'https://www.lazada.com.my/products/nivea-men-deep-white-oil-clear-detox-mud-foam-100g-i1299546099-s3963046423.html?c=&channelLpJumpArgs=&clickTrackInfo=query%253Anivea%252Bfor%252Bmen%252Bdeep%252Bwhite%252Boil%252Bclear%252Bmud%252Bfoam%253Bnid%253A1299546099%253Bsrc%253ALazadaMainSrp%253Brn%253A69c37cad2ac3683f149f1107f407af14%253Bregion%253Amy%253Bsku%253A1299546099_MY%253Bprice%253A17.9%253Bclient%253Adesktop%253Bsupplier_id%253A1000035173%253Bpromotion_biz%253A%253Basc_category_id%253A8080%253Bitem_id%253A1299546099%253Bsku_id%253A3963046423%253Bshop_id%253A237695&fastshipping=0&freeshipping=1&fs_ab=2&fuse_fs=&lang=en&location=Perak&price=17.9&priceCompare=&ratingscore=5.0&request_id=69c37cad2ac3683f149f1107f407af14&review=2&sale=10&search=1&source=search&spm=a2o4k.searchlist.list.i40.42414f10s5eiLK&stock=1')
-            guardian_price = driver.find_element(By.CSS_SELECTOR, 'span.pdp-price_size_xl').text
+            guardian_price = driver.find_element(By.CSS_SELECTOR, 'span.pdp-price.pdp-price_type_normal.pdp'
+                                                                  '-price_color_orange.pdp-price_size_xl').text
             guardian_price = guardian_price.replace("RM", "")
             guardian_title = driver.find_element(By.TAG_NAME, 'h1').text
             driver.quit()

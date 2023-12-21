@@ -59,20 +59,22 @@ class Dettol():
                 self.data_save_dict = {"Title Aeon": [self.aeon_title],
                                        "Price Aeon": [self.aeon_price],
                                        "Price/pcs (Aeon)": [self.aeon_price]}
+                Save_data(self.filename, self.data_save_dict, check.is_today_empty)
 
             if ("Title Guardian" in check.nan_column) | ("Price Guardian" in check.nan_column):
                 self.guardian_title, self.guardian_price = self.guardian()
                 self.data_save_dict = {"Title Guardian": [self.guardian_title],
                                        "Price Guardian": [self.guardian_price],
                                        "Price/pcs (Guardian)": [float(self.guardian_price) / 2]}
+                Save_data(self.filename, self.data_save_dict, check.is_today_empty)
 
             if ("Title Caring" in check.nan_column) | ("Price Caring" in check.nan_column):
                 self.caring_title, self.caring_price = self.caring()
                 self.data_save_dict = {"Title Caring": [self.caring_title],
                                        "Price Caring": [self.caring_price],
                                        "Price/pcs (Caring)": [self.caring_price]}
-
-            Save_data(self.filename, self.data_save_dict, check.is_today_empty)
+                Save_data(self.filename, self.data_save_dict, check.is_today_empty)
+            # Save_data(self.filename, self.data_save_dict, check.is_today_empty)
 
     def watson(self):
         try:

@@ -43,18 +43,21 @@ class Coffee:
                 self.shopee_title, self.shopee_price = self.scrape_coffe_shopee()
                 self.data_save_dict = {"Title Shopee": [self.shopee_title],
                                        "Shopee Price": [self.shopee_price]}
+                Save_data(self.filename, self.data_save_dict, check.is_today_empty)
 
             if ("Title Lazada" in check.nan_column) | ("Lazada Price" in check.nan_column):
                 self.lazada_title, self.lazada_price = self.scrape_coffe_lazada()
                 self.data_save_dict = {"Title Lazada": [self.lazada_title],
                                        "Lazada Price": [self.lazada_price]}
+                Save_data(self.filename, self.data_save_dict, check.is_today_empty)
 
             if ("Title PGMall" in check.nan_column) | ("PGMall Price" in check.nan_column):
                 self.pg_title, self.pg_price = self.scrape_coffe_pgmall()
                 self.data_save_dict = {"Title PGMall": [self.pg_title],
                                        "PGMall Price": [self.pg_price]}
+                Save_data(self.filename, self.data_save_dict, check.is_today_empty)
 
-            Save_data(self.filename, self.data_save_dict, check.is_today_empty)
+            # Save_data(self.filename, self.data_save_dict, check.is_today_empty)
 
     def scrape_coffe_shopee(self):
 
