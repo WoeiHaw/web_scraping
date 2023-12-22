@@ -250,6 +250,14 @@ class HousePriceDashBoard:
                 }
             }, )
 
+            hist.add_vline(
+                x=df["Price"].median(), line_width=3, line_dash="dash", annotation_text="Median",
+                line_color="green", annotation_position="top left",annotation_font_color="green")
+            hist.add_vline(
+                x=df["Price"].mean(), line_width=3, line_dash="dash", annotation_text="Mean",
+                line_color="red",annotation_position="top right",annotation_font_color="red")
+
+
             return bar, scatter, burst, pie, hist
 
         thread = threading.Thread(target=app.run_server,

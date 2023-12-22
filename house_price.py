@@ -120,7 +120,7 @@ class House_price():
 
         driver = webdriver.Chrome(service=self.service, options=self.options)
 
-        for page in range(1,2):
+        for page in range(1,52):
             house_link = []
             data_to_save = {
                 "Date": [],
