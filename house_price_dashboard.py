@@ -14,8 +14,8 @@ class HousePriceDashBoard:
         self.path = path
         jb_house = pd.read_csv(self.path + "House Price JB(Processed).csv")
         kl_house = pd.read_csv(self.path + "House Price kl(Processed).csv")
-        kl_house["Date"] = pd.to_datetime(kl_house["Date"],dayfirst=True,format="mixed")
-        jb_house["Date"] = pd.to_datetime(jb_house["Date"],dayfirst=True,format="mixed")
+        kl_house["Date"] = pd.to_datetime(kl_house["Date"], dayfirst=True, format="mixed")
+        jb_house["Date"] = pd.to_datetime(jb_house["Date"], dayfirst=True, format="mixed")
 
         dbc_css = "https://cdn.jsdelivr.net/gh/AnnMarieW/dash-bootstrap-templates/dbc.min.css"
         load_figure_template("SLATE")
@@ -252,11 +252,10 @@ class HousePriceDashBoard:
 
             hist.add_vline(
                 x=df["Price"].median(), line_width=3, line_dash="dash", annotation_text="Median",
-                line_color="green", annotation_position="top left",annotation_font_color="green")
+                line_color="green", annotation_position="top left", annotation_font_color="green")
             hist.add_vline(
                 x=df["Price"].mean(), line_width=3, line_dash="dash", annotation_text="Mean",
-                line_color="red",annotation_position="top right",annotation_font_color="red")
-
+                line_color="red", annotation_position="top right", annotation_font_color="red")
 
             return bar, scatter, burst, pie, hist
 

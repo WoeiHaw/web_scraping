@@ -390,7 +390,7 @@ def dashboard_menu():
 def main_gui():
     global window
     window = new_window()
-    title = Label(text="Web Scraping & Dashboard Programme", font=(FONT_NAME, 40), bg=COLOR1, fg=COLOR3)
+    title = Label(text="Web Scraping &\n Dashboard Programme", font=(FONT_NAME, 40), bg=COLOR1, fg=COLOR3)
     title.grid(row=0, column=0, )
 
     button_web_scraping = Button(text="Web Scraping Programme", font=(FONT_NAME, 20), bg=COLOR2,
