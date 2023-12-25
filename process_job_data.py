@@ -125,7 +125,9 @@ class ProcessData:
             ind = posted_date.find("ago")
 
             if ind != -1:
-                if posted_date[ind - 1] != "d":
+                if posted_date[ind-1] == "+":
+                    job_df.loc[index, "Posted Date"] = row["Date"] - pd.Timedelta(days=30)
+                elif posted_date[ind - 1] != "d":
                     job_df.loc[index, "Posted Date"] = row["Date"]
                 elif posted_date[ind-1] == "+":
                     job_df.loc[index, "Posted Date"] = row["Date"] - pd.Timedelta(days=30)
