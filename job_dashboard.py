@@ -48,7 +48,7 @@ class JobDashboard:
 
             dataframe["Company Name"] = dataframe["Company Name"].apply(
                 lambda x: x.replace("PRIVATE LIMITED", "").replace("Pte Ltd", "").replace("Pte. Ltd.", "")
-                .replace("PTE. LTD.", "").replace("Sdn Bhd", "").replace("Berhad", "").replace("Bhd", "").strip()
+                .replace("PTE. LTD.", "").replace("Sdn. Bhd.", "").replace("Sdn Bhd", "").replace("Berhad", "").replace("Bhd", "").strip()
             )
             return dataframe
 
@@ -67,13 +67,16 @@ class JobDashboard:
 
         def process_job_title(title):
             if len(title) > 30:
+
                 index = title.find("(")
                 index2 = title.find("|")
                 index3 = title.find("-")
+                # index4 = title.find("(")
 
-                title = title[:index] if index != -1 else title
-                title = title[:index2] if index2 != -1 else title
-                title = title[:index3] if index3 != -1 else title
+                title = title[:index].strip() if index != -1 else title
+                title = title[:index2].strip() if index2 != -1 else title
+                title = title[:index3].strip() if index3 != -1 else title
+                # title = title[:index4] if index4 != -1 else title
             #         if index != -1:
             #             title = title[:index]
             #         if index2 !=-1:
@@ -101,6 +104,9 @@ class JobDashboard:
 
         sg_df["Posted Date"] = pd.to_datetime(sg_df["Posted Date"], format="mixed")
         my_df["Posted Date"] = pd.to_datetime(my_df["Posted Date"], format="mixed")
+
+        sg_df["Company Name"] = sg_df["Company Name"].apply(process_job_title)
+        my_df["Company Name"] = my_df["Company Name"].apply(process_job_title)
 
         app.layout = html.Div([
             html.Div(id="title"),
@@ -245,6 +251,7 @@ class JobDashboard:
                     }
                 },
             )
+
             bar_title = px.bar(
                 x=df['Title'].value_counts()[:10].index,
                 y=df['Title'].value_counts()[:10].values,

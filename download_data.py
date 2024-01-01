@@ -4,7 +4,7 @@ from googleapiclient.discovery import build
 import os
 
 class Download_data():
-    def __init__(self):
+    def __init__(self, path):
         # Authenticate with PyDrive
         gauth = GoogleAuth()
         gauth.LocalWebserverAuth()
@@ -17,8 +17,8 @@ class Download_data():
         folder_id = '1JEp79t-I3f0QI-3mgLQ1phTh-ht26vqy'
 
         # Create a folder on your local machine to save the downloaded files
-        local_folder_path = '../../data'
-        os.makedirs(local_folder_path, exist_ok=True)
+        # local_folder_path = '../../data'
+        os.makedirs(path, exist_ok=True)
 
 
         # folder_query = f"'{folder_id}' in parents"
@@ -40,7 +40,7 @@ class Download_data():
             if file["title"].replace(".csv","") in fileName:
 
                 # Download each file and save it to the local folder
-                local_file_path = os.path.join(local_folder_path, file['title'])
+                local_file_path = os.path.join(path, file['title'])
 
                 file.GetContentFile(local_file_path)
 

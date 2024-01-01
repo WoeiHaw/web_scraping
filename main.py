@@ -25,55 +25,56 @@ COLOR3 = "#5C5470"
 COLOR4 = "352F44"
 FONT_NAME = "Courier"
 
-
+data_path = "data/"
+backup_path = "Data_back_up/"
 # ---------------------------- TRIGGER FOR WEB SCRAPPING ------------------------------- #
 def skechers_shoes_my():
-    Shoes("my", "../../data/skechers_shoes_MY.csv")
+    Shoes("my", f"{data_path}skechers_shoes_MY.csv")
 
 
 def skechers_shoes_sg():
-    Shoes("sg", "../../data/skechers_shoes_SG.csv")
+    Shoes("sg", f"{data_path}skechers_shoes_SG.csv")
 
 
 def kl_house():
-    House_price("../../data/House Price kl.csv", "kuala+lumpur")
+    House_price(f"{data_path}House Price kl.csv", "kuala+lumpur")
 
 
 def jb_house():
-    House_price("../../data/House Price JB.csv", "johor+bahru")
+    House_price(f"{data_path}/House Price JB.csv", "johor+bahru")
 
 
 def sg_job():
-    Job_info("../../data/Singapore Job.csv", "sg")
+    Job_info(f"{data_path}/Singapore Job.csv", "sg")
 
 
 def my_job():
-    Job_info("../../data/Malaysia Job.csv", "my")
+    Job_info(f"{data_path}Malaysia Job.csv", "my")
 
 
 def scrape_sg_room():
-    Sg_room("../../data/sg rental.csv")
-    Process_data("../../data/")
+    Sg_room(f"{data_path}sg rental.csv")
+    Process_data(data_path)
 
 
 def scrape_coffee():
-    Coffee("../../data/kopi o price.csv")
+    Coffee(f"{data_path}kopi o price.csv")
 
 
 def scrape_shower_gel():
-    Dettol("../../data/Dettol Shower Gel.csv")
+    Dettol(f"{data_path}Dettol Shower Gel.csv")
 
 
 def scrape_shampoo():
-    Shapoo("../../data/shampoo price.csv")
+    Shapoo(f"{data_path}shampoo price.csv")
 
 
 def scrape_face_wash():
-    Facewash("../../data/Nivea Man.csv")
+    Facewash(f"{data_path}Nivea Man.csv")
 
 
 def scrape_tooth_paste():
-    Toothpaste("../../data/Darlie Toothpaste.csv")
+    Toothpaste(f"{data_path}Darlie Toothpaste.csv")
 
 
 def scrape_all():
@@ -92,8 +93,8 @@ def scrape_all_grocerries():
     scrape_shampoo()
     scrape_face_wash()
     scrape_tooth_paste()
-    Shoes("my", "../../data/skechers_shoes_MY.csv")
-    Shoes("sg", "../../data/skechers_shoes_SG.csv")
+    Shoes("my", f"{data_path}skechers_shoes_MY.csv")
+    Shoes("sg", f"{data_path}skechers_shoes_SG.csv")
 
 
 def scrape_all_job():
@@ -102,57 +103,59 @@ def scrape_all_job():
 
 
 def scrape_all_house():
-    House_price("../../data/House Price kl.csv", "kuala+lumpur")
-    House_price("../../data/House Price JB.csv", "johor+bahru")
+    House_price(f"{data_path}House Price kl.csv", "kuala+lumpur")
+    House_price(f"{data_path}House Price JB.csv", "johor+bahru")
 
 
 def get_shoes_image():
     Shoes_image("my")
     Shoes_image("sg")
 
-
+def back_up_google_drive():
+    Backup_drive(data_path)
 def back_up():
     file_location = [
-        "../../data/kopi o price.csv",
-        "../../data/Dettol Shower Gel.csv",
-        "../../data/shampoo price.csv",
-        "../../data/Nivea Man.csv",
-        "../../data/Darlie Toothpaste.csv",
-        "../../data/skechers_shoes_MY.csv",
-        "../../data/skechers_shoes_SG.csv",
-        "../../data/sg rental.csv",
-        "../../data/Malaysia Job.csv",
-        "../../data/Singapore Job.csv",
-        "../../data/House Price kl.csv",
-        "../../data/House Price JB.csv",
-        "../../data/sg rental(processed).csv",
-        "../../data/Singapore Job(Processed).csv",
-        "../../data/Malaysia Job(Processed).csv",
-        "../../data/House Price kl(Processed).csv",
-        "../../data/House Price JB(Processed).csv"
+        f"{data_path}kopi o price.csv",
+        f"{data_path}Dettol Shower Gel.csv",
+        f"{data_path}shampoo price.csv",
+        f"{data_path}Nivea Man.csv",
+        f"{data_path}Darlie Toothpaste.csv",
+        f"{data_path}skechers_shoes_MY.csv",
+        f"{data_path}skechers_shoes_SG.csv",
+        f"{data_path}sg rental.csv",
+        f"{data_path}Malaysia Job.csv",
+        f"{data_path}Singapore Job.csv",
+        f"{data_path}House Price kl.csv",
+        f"{data_path}House Price JB.csv",
+        f"{data_path}sg rental(processed).csv",
+        f"{data_path}Singapore Job(Processed).csv",
+        f"{data_path}Malaysia Job(Processed).csv",
+        f"{data_path}House Price kl(Processed).csv",
+        f"{data_path}House Price JB(Processed).csv"
     ]
     backup_location = [
-        "../../Data_back_up/kopi o price.csv",
-        "../../Data_back_up/Dettol Shower Gel.csv",
-        "../../Data_back_up/shampoo price.csv",
-        "../../Data_back_up/Nivea Man.csv",
-        "../../Data_back_up/Darlie Toothpaste.csv",
-        "../../Data_back_up/skechers_shoes_MY.csv",
-        "../../Data_back_up/skechers_shoes_SG.csv",
-        "../../Data_back_up/sg rental.csv",
-        "../../Data_back_up/Malaysia Job.csv",
-        "../../Data_back_up/Singapore Job.csv",
-        "../../Data_back_up/House Price kl.csv",
-        "../../Data_back_up/House Price JB.csv",
-        "../../Data_back_up/sg rental(processed).csv",
-        "../../Data_back_up/Singapore Job(Processed).csv",
-        "../../Data_back_up/Malaysia Job(Processed).csv",
-        "../../Data_back_up/House Price kl(Processed).csv",
-        "../../Data_back_up/House Price JB(Processed).csv"
+        f"{backup_path}kopi o price.csv",
+        f"{backup_path}Dettol Shower Gel.csv",
+        f"{backup_path}shampoo price.csv",
+        f"{backup_path}Nivea Man.csv",
+        f"{backup_path}Darlie Toothpaste.csv",
+        f"{backup_path}skechers_shoes_MY.csv",
+        f"{backup_path}skechers_shoes_SG.csv",
+        f"{backup_path}sg rental.csv",
+        f"{backup_path}Malaysia Job.csv",
+        f"{backup_path}Singapore Job.csv",
+        f"{backup_path}House Price kl.csv",
+        f"{backup_path}House Price JB.csv",
+        f"{backup_path}sg rental(processed).csv",
+        f"{backup_path}Singapore Job(Processed).csv",
+        f"{backup_path}Malaysia Job(Processed).csv",
+        f"{backup_path}House Price kl(Processed).csv",
+        f"{backup_path}House Price JB(Processed).csv"
     ]
     Backup(file_location, backup_location)
 
-
+def download_data_drive():
+    Download_data(data_path)
 # ---------------------------- UI SETUP FOR WEB SCRAPING ------------------------------- #
 window = None
 
@@ -231,13 +234,13 @@ def data_management():
     title = Label(text="Data Management", font=(FONT_NAME, 40), bg=COLOR1, fg=COLOR3)
     title.grid(row=0, column=0, pady=10, columnspan=3)
 
-    download_data = Button(text="Download Data", font=(FONT_NAME, 20), bg=COLOR2, command=Download_data)
+    download_data = Button(text="Download Data", font=(FONT_NAME, 20), bg=COLOR2, command=download_data_drive)
     download_data.grid(row=1, column=0, pady=10, columnspan=3)
 
     back_up_local = Button(text="Back Up Locally", font=(FONT_NAME, 20), bg=COLOR2, command=back_up)
     back_up_local.grid(row=2, column=0, pady=10, columnspan=3)
 
-    back_up_drive = Button(text="Back Up - Google Drive", font=(FONT_NAME, 20), bg=COLOR2, command=Backup_drive)
+    back_up_drive = Button(text="Back Up - Google Drive", font=(FONT_NAME, 20), bg=COLOR2, command=back_up_google_drive)
     back_up_drive.grid(row=3, column=0, pady=10, columnspan=3)
 
     skechers_shoes_image = Button(text="Get Skeacher Shoes Image", font=(FONT_NAME, 20), bg=COLOR2,
@@ -326,26 +329,26 @@ def web_scrape_main_gui():
 # ---------------------------- UI SETUP FOR DASHBOARD ------------------------------- #
 
 def get_shoes_dashboard():
-    shoes_dashboard = Shoes_dashboard("../../data/")
+    shoes_dashboard = Shoes_dashboard(data_path)
     shoes_dashboard.run()
     # time.sleep(30)
 
 
 def get_grocery_dashboard():
-    grocery_dashboard = Grocery_dashboard("../../data/")
+    grocery_dashboard = Grocery_dashboard(data_path)
     grocery_dashboard.run()
 
 
 def get_sg_rental_dashboard():
-    Sg_rental_dashboard("../../data/")
+    Sg_rental_dashboard(f"{data_path}")
 
 
 def get_job_dashboard():
-    JobDashboard("../../data/")
+    JobDashboard(data_path)
 
 
 def get_house_price_dashboard():
-    HousePriceDashBoard("../../data/")
+    HousePriceDashBoard(data_path)
 
 
 def dashboard_menu():

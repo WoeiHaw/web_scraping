@@ -60,7 +60,7 @@ class Sg_rental_dashboard():
             Input("metrics", "value")
         )
         def get_dashboard_components(start_date, end_date, metrics):
-            df = rental_df.query(" @start_date <= Date <= @end_date")
+            df = rental_df.query(" @start_date <= Date <= @end_date and `Rental(SGD)`<10000")
             hist = px.histogram(
                 df,
                 x="Rental(SGD)",

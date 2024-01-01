@@ -3,12 +3,11 @@ from pydrive.drive import GoogleDrive
 
 
 class Backup_drive():
-    def __init__(self):
+    def __init__(self, path):
 
         gauth = GoogleAuth()
         gauth.LocalWebserverAuth()
         drive = GoogleDrive(gauth)
-        path = "../../data/"
 
         fileName = ["Darlie Toothpaste", "Dettol Shower Gel", "House Price JB", "House Price kl",
                     "kopi o price", "Malaysia Job", "Nivea Man", "sg rental",
