@@ -18,6 +18,7 @@ from singapore_rental_dashboard import Sg_rental_dashboard
 from processed_sg_rental import Process_data
 from job_dashboard import JobDashboard
 from house_price_dashboard import HousePriceDashBoard
+from add_directory import AddDirectory
 
 COLOR1 = "#FAF0E6"
 COLOR2 = "#B9B4C7"
@@ -28,6 +29,9 @@ FONT_NAME = "Courier"
 data_path = "data/"
 backup_path = "Data_back_up/"
 # ---------------------------- TRIGGER FOR WEB SCRAPPING ------------------------------- #
+AddDirectory()
+
+
 def skechers_shoes_my():
     Shoes("my", f"{data_path}skechers_shoes_MY.csv")
 
@@ -111,8 +115,11 @@ def get_shoes_image():
     Shoes_image("my")
     Shoes_image("sg")
 
+
 def back_up_google_drive():
     Backup_drive(data_path)
+
+
 def back_up():
     file_location = [
         f"{data_path}kopi o price.csv",
@@ -154,8 +161,11 @@ def back_up():
     ]
     Backup(file_location, backup_location)
 
+
 def download_data_drive():
     Download_data(data_path)
+
+
 # ---------------------------- UI SETUP FOR WEB SCRAPING ------------------------------- #
 window = None
 
