@@ -8,7 +8,9 @@ class AddDirectory:
 
             folder_path = f"{path}{folder}"
             if not os.path.exists(folder_path) :
-                print(folder)
                 os.makedirs(folder_path)
+                if folder =="assets":
+                    os.makedirs(f"{folder_path}/shoes images my")
+                    os.makedirs(f"{folder_path}/shoes images sg")
 
 
