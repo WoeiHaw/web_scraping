@@ -44,14 +44,10 @@ class Backup_drive():
         # deletion
         f = None
 
-        def is_image_file(file_name):
-            # Check if the file has an image extension (you can extend this list)
-            image_extensions = ['.jpg', '.jpeg', '.png', '.gif', '.bmp']
-            return any(file_name.lower().endswith(ext) for ext in image_extensions)
-
         assets_folder_list = drive.ListFile(
             {
-                'q': "title='assets'  and mimeType='application/vnd.google-apps.folder' and trashed=false"}).GetList()
+                'q': f"title='assets' and '{folder_id}' in parents  and mimeType='application/vnd.google-apps.folder' "
+                     f"and trashed=false"}).GetList()
         if assets_folder_list:
             assets_folder_id = assets_folder_list[0]['id']
         else:
@@ -61,7 +57,8 @@ class Backup_drive():
             drive_folder.Upload()
             assets_folder_list = drive.ListFile(
                 {
-                    'q': "title='assets'  and mimeType='application/vnd.google-apps.folder' and trashed=false"}).GetList()
+                    'q': f"title='assets' and '{folder_id}' in parents and "
+                         "mimeType='application/vnd.google-apps.folder' and trashed=false"}).GetList()
             assets_folder_id = assets_folder_list[0]['id']
 
         for folder_name in os.listdir("./assets"):
@@ -70,7 +67,9 @@ class Backup_drive():
                     'q': f"'{assets_folder_id}' in parents and title = '{folder_name}'"
                 }
             ).GetList()
+
             if not image_folder:
+
                 image_folder_metadata = {'title': folder_name, 'mimeType': 'application/vnd.google-apps.folder',
                                          'parents': [{"id": assets_folder_id}]}
                 image_folder = drive.CreateFile(image_folder_metadata)
@@ -86,15 +85,19 @@ class Backup_drive():
 
             image_list = drive.ListFile(
                 {
-                    "q": f"'{image_folder_id}' in parents and mimeType contains 'image/'"
+                    "q": f"'{image_folder_id}' in parents "
+                         # f"and mimeType contains 'image/'"
                 }
             ).GetList()
 
             drive_images = [image['title'] for image in image_list]
-
+            upload_image = []
             for image in local_images:
-                file_path = os.path.join(folder_path, image)
                 if image not in drive_images:
-                    file_drive = drive.CreateFile({"title": image, 'parents': [{'id': image_folder_id}]})
-                    file_drive.SetContentFile(file_path)
-                    file_drive.Upload()
+                    upload_image.append(image)
+
+            for image in upload_image:
+                file_path = os.path.join(folder_path, image)
+                file_drive = drive.CreateFile({"title": image, 'parents': [{'id': image_folder_id}]})
+                file_drive.SetContentFile(file_path)
+                file_drive.Upload()

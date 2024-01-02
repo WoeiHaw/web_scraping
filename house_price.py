@@ -174,4 +174,4 @@ class House_price():
                 Save_data(filename, data_to_save, True)
 
         driver.quit()
-        ProcessHousePrice("../../data/", "JB" if place == "johor+bahru" else "kl").process()
+        ProcessHousePrice(filename[:filename.find("House")], "JB" if place == "johor+bahru" else "kl").process()

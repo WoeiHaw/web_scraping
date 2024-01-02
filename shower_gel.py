@@ -101,7 +101,7 @@ class Dettol():
                 EC.element_to_be_clickable((By.XPATH, '//section[@id="location-form"]/form/div/button'))).click()
             time.sleep(5)
             aeon_title = driver.find_element(By.CSS_SELECTOR, "section.R1_tOog0IelmdG6HHC1g").text
-            aeon_price = driver.find_element(By.CSS_SELECTOR, "span.eWWWefEZnMjXklZCSPch").text
+            aeon_price = driver.find_element(By.CSS_SELECTOR, "span.X0RsB269dboGUMEWcNmH").text
             aeon_price = float(aeon_price.replace("RM", "").strip())
             unit_aeon = driver.find_element(By.CSS_SELECTOR, "div.czXzIdRs3ZRSbzoP4pWb").text
             aeon_title = aeon_title.replace("\n", " ")
