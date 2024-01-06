@@ -246,8 +246,8 @@ def data_management():
     download_data = Button(text="Download Data", font=(FONT_NAME, 20), bg=COLOR2, command=download_data_drive)
     download_data.grid(row=1, column=0, pady=10, columnspan=3)
 
-    back_up_local = Button(text="Back Up Locally", font=(FONT_NAME, 20), bg=COLOR2, command=back_up)
-    back_up_local.grid(row=2, column=0, pady=10, columnspan=3)
+    # back_up_local = Button(text="Back Up Locally", font=(FONT_NAME, 20), bg=COLOR2, command=back_up)
+    # back_up_local.grid(row=2, column=0, pady=10, columnspan=3)
 
     back_up_drive = Button(text="Back Up - Google Drive", font=(FONT_NAME, 20), bg=COLOR2, command=back_up_google_drive)
     back_up_drive.grid(row=3, column=0, pady=10, columnspan=3)
@@ -259,7 +259,7 @@ def data_management():
     button_exit_grocerries = Button(text="Exit Programme", font=(FONT_NAME, 20), bg=COLOR3, command=window.destroy)
     button_exit_grocerries.grid(row=5, column=0, padx=20, columnspan=1)
 
-    button_main_menu = Button(text="GO BACK", font=(FONT_NAME, 20), bg=COLOR3, command=go_web_scrape_main_gui)
+    button_main_menu = Button(text="GO BACK", font=(FONT_NAME, 20), bg=COLOR3, command=go_main_menu)
     button_main_menu.grid(row=5, column=2, padx=20, pady=20, columnspan=1)
 
 
@@ -324,9 +324,6 @@ def web_scrape_main_gui():
 
     button_run_all = Button(text="Scrape All", font=(FONT_NAME, 20), bg=COLOR2, command=scrape_all)
     button_run_all.grid(row=5, column=0, pady=10, columnspan=2)
-
-    button_backup = Button(text="Data Management", font=(FONT_NAME, 20), bg=COLOR2, command=data_management)
-    button_backup.grid(row=6, column=0, pady=10, columnspan=2)
 
     button_exit = Button(text="Exit Programme", font=(FONT_NAME, 20), bg=COLOR3, command=window.destroy)
     button_exit.grid(row=8, column=0, pady=10)
@@ -412,6 +409,9 @@ def main_gui():
     button_dashboard = Button(text="Dashboard", font=(FONT_NAME, 20), bg=COLOR2,
                               command=dashboard_menu)
     button_dashboard.grid(row=2, column=0, )
+
+    button_backup = Button(text="Data Management", font=(FONT_NAME, 20), bg=COLOR2, command=data_management)
+    button_backup.grid(row=3, column=0, pady=10, columnspan=2)
 
     button_exit = Button(text="Exit Programme", font=(FONT_NAME, 20), bg=COLOR3, command=window.destroy)
     button_exit.grid(row=8, column=0, pady=10)
