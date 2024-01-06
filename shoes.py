@@ -1,12 +1,11 @@
-import time
-
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By
 from check_data import Check_data
 from datetime import datetime
 from save_data import Save_data
-
+import os
+import requests
 now = datetime.now()
 today_date = now.strftime("%d-%m-%Y")
 
@@ -23,8 +22,10 @@ class Shoes():
     def get_shoes(self, place):
         if place == "my":
             currency = "RM"
+            path = "./assets/shoes images my"
         elif place == "sg":
             currency = "SGD $"
+            path = "./assets/shoes images sg"
         for i in range(10):
             try:
                 driver = webdriver.Chrome(service=self.service, options=self.options)
@@ -67,6 +68,27 @@ class Shoes():
                     price_list.append(price[0].text)
                     price_list = [price.replace("RM", "") for price in price_list]
                     product_discription.append(description.text)
+
+                    if not os.path.isfile(f"{path}/{description.text}.jpg"):
+                        print("hi")
+
+                        img = shoe.find_element(By.CSS_SELECTOR, "img.lazyload")
+                        img_link = img.get_attribute("data-srcset")
+
+                        try:
+                            indx_start = img_link.split(',')[1].find("BBK_")
+                            indx_end = img_link.split(',')[1].find(".jpg")
+                            img_link_final = img_link.split(',')[1]
+                            img_link_final = f"{img_link_final[:indx_start]}BBK_240x{img_link_final[indx_end:]}"
+                        except IndexError:
+                            indx_start = img_link.split(',')[0].find("BBK_")
+                            indx_end = img_link.split(',')[0].find(".jpg")
+                            img_link_final = img_link.split(',')[0]
+                            img_link_final = f"{img_link_final[:indx_start]}BBK_240x{img_link_final[indx_end:]}"
+                        #         img_link_final = img_link.split(',')[0]#.replace("332","240")
+                        response = requests.get(f"https:{img_link_final}")
+                        with open(f'{path}/{description.text}.jpg', 'wb') as file:
+                            file.write(response.content)
 
                 driver.quit()
                 break

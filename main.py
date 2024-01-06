@@ -13,7 +13,6 @@ from backup_drive import Backup_drive
 from download_data import Download_data
 from shoes_dashboard import Shoes_dashboard
 from grocery_item_dashboard import Grocery_dashboard
-from shoes_image import Shoes_image
 from singapore_rental_dashboard import Sg_rental_dashboard
 from processed_sg_rental import Process_data
 from job_dashboard import JobDashboard
@@ -111,9 +110,9 @@ def scrape_all_house():
     House_price(f"{data_path}House Price JB.csv", "johor+bahru")
 
 
-def get_shoes_image():
-    Shoes_image("my")
-    Shoes_image("sg")
+# def get_shoes_image():
+#     Shoes_image("my")
+#     Shoes_image("sg")
 
 
 def back_up_google_drive():
@@ -253,9 +252,9 @@ def data_management():
     back_up_drive = Button(text="Back Up - Google Drive", font=(FONT_NAME, 20), bg=COLOR2, command=back_up_google_drive)
     back_up_drive.grid(row=3, column=0, pady=10, columnspan=3)
 
-    skechers_shoes_image = Button(text="Get Skeacher Shoes Image", font=(FONT_NAME, 20), bg=COLOR2,
-                                  command=get_shoes_image)
-    skechers_shoes_image.grid(row=4, column=0, pady=10, columnspan=3)
+    # skechers_shoes_image = Button(text="Get Skeacher Shoes Image", font=(FONT_NAME, 20), bg=COLOR2,
+    #                               command=get_shoes_image)
+    # skechers_shoes_image.grid(row=4, column=0, pady=10, columnspan=3)
 
     button_exit_grocerries = Button(text="Exit Programme", font=(FONT_NAME, 20), bg=COLOR3, command=window.destroy)
     button_exit_grocerries.grid(row=5, column=0, padx=20, columnspan=1)
