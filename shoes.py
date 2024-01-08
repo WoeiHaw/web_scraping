@@ -6,6 +6,7 @@ from datetime import datetime
 from save_data import Save_data
 import os
 import requests
+
 now = datetime.now()
 today_date = now.strftime("%d-%m-%Y")
 
@@ -51,13 +52,17 @@ class Shoes():
                 links_list = []
                 price_list = []
                 for shoe in shoes:
-                    link = shoe.find_element(By.CSS_SELECTOR, 'a')
+                    link = shoe.find_element(By.CSS_SELECTOR, 'a').get_attribute('data-value')
 
                     prices = shoe.find_element(By.CSS_SELECTOR, "div.tt-price")
 
-                    description = shoe.find_element(By.TAG_NAME, "h2")
+                    description = shoe.find_element(By.TAG_NAME, "h2").text
 
-                    addr = f"https://www.skechers.com.{place}{link.get_attribute('data-value')}"
+                    if description.find("-") == -1:
+                        description = link[link.find("/skechers") + 1:].replace("-", " ").title().strip()
+                        description = description.replace("Gorun", "GOrun")
+
+                    addr = f"https://www.skechers.com.{place}{link}"
 
                     if addr != f"https://www.skechers.com.{place}/collections/men#":
                         links_list.append(addr)
@@ -67,10 +72,9 @@ class Shoes():
                     price = prices.find_elements(By.TAG_NAME, "span")
                     price_list.append(price[0].text)
                     price_list = [price.replace("RM", "") for price in price_list]
-                    product_discription.append(description.text)
+                    product_discription.append(description)
 
-                    if not os.path.isfile(f"{path}/{description.text}.jpg"):
-                        print("hi")
+                    if not os.path.isfile(f"{path}/{description}.jpg"):
 
                         img = shoe.find_element(By.CSS_SELECTOR, "img.lazyload")
                         img_link = img.get_attribute("data-srcset")
@@ -87,7 +91,7 @@ class Shoes():
                             img_link_final = f"{img_link_final[:indx_start]}BBK_240x{img_link_final[indx_end:]}"
                         #         img_link_final = img_link.split(',')[0]#.replace("332","240")
                         response = requests.get(f"https:{img_link_final}")
-                        with open(f'{path}/{description.text}.jpg', 'wb') as file:
+                        with open(f'{path}/{description}.jpg', 'wb') as file:
                             file.write(response.content)
 
                 driver.quit()

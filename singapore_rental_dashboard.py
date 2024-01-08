@@ -133,7 +133,7 @@ class Sg_rental_dashboard():
                 }
             )
             sg_rental_area = pd.concat([sg_rental_area, no_adv_area_df])
-            print(sg_rental_area)
+
             with open("2-planning-area.json") as f:
                 map_data = json.loads(f.read())
 
