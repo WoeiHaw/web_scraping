@@ -17,21 +17,29 @@ class Shoes():
         self.options = webdriver.ChromeOptions()
         check = Check_data(filename)
         if check.is_today_empty:
-            data_save_dict = self.get_shoes(place)
-            Save_data(filename, data_save_dict, check.is_today_empty)
-
-    def get_shoes(self, place):
-        if place == "my":
-            currency = "RM"
-            path = "./assets/shoes images my"
-        elif place == "sg":
-            currency = "SGD $"
-            path = "./assets/shoes images sg"
-        for i in range(10):
-            try:
-                driver = webdriver.Chrome(service=self.service, options=self.options)
-
-                driver.get(f"https://www.skechers.com.{place}/collections/men")
+            # data_save_dict = self.get_shoes(place)
+            # Save_data(filename, data_save_dict, check.is_today_empty)
+            url = f"https://www.skechers.com.{place}/collections/men"
+            driver = webdriver.Chrome(service=self.service, options=self.options)
+            driver.get(url)
+            if place == "my":
+                page_elements = driver.find_elements(By.CSS_SELECTOR, ".tt-pagination >ul>li")
+                pages = []
+                last_page = int(page_elements[-1].text)
+                shoes_data = {
+                    "Date": [],
+                    "Description": [],
+                    "Price (RM)": [],
+                    "Link": []
+                }
+                for i in range(1, last_page + 1):
+                    driver.get(f"{url}?page={i}")
+                    new_data = self.get_shoes(place, driver)
+                    shoes_data["Date"] = shoes_data["Date"] + new_data["Date"]
+                    shoes_data["Description"] = shoes_data["Description"] + new_data["Description"]
+                    shoes_data["Price (RM)"] = shoes_data["Price (RM)"] + new_data["Price (RM)"]
+                    shoes_data["Link"] = shoes_data["Link"] + new_data["Link"]
+            elif place == "sg":
                 isStop = False
                 count = 0
                 while not isStop:
@@ -45,59 +53,68 @@ class Shoes():
                     except:
                         pass
                     count += 1
+                shoes_data = self.get_shoes(place, driver)
 
-                shoes = driver.find_elements(By.XPATH, '//div[@class="col-6 col-md-3 tt-col-item"]')
+            driver.quit()
+            Save_data(filename, shoes_data, check.is_today_empty)
 
-                product_discription = []
-                links_list = []
-                price_list = []
-                for shoe in shoes:
-                    link = shoe.find_element(By.CSS_SELECTOR, 'a').get_attribute('data-value')
+    def get_shoes(self, place, driver):
+        now = datetime.now()
+        today_date = now.strftime("%d-%m-%Y")
+        if place == "my":
+            currency = "RM"
+            path = "./assets/shoes images my"
+        elif place == "sg":
+            currency = "SGD $"
+            path = "./assets/shoes images sg"
 
-                    prices = shoe.find_element(By.CSS_SELECTOR, "div.tt-price")
+        shoes = driver.find_elements(By.XPATH, '//div[@class="col-6 col-md-3 tt-col-item"]')
 
-                    description = shoe.find_element(By.TAG_NAME, "h2").text
+        product_discription = []
+        links_list = []
+        price_list = []
+        for shoe in shoes:
+            link = shoe.find_element(By.CSS_SELECTOR, 'a').get_attribute('data-value')
 
-                    if description.find("-") == -1:
-                        description = link[link.find("/skechers") + 1:].replace("-", " ").title().strip()
-                        description = description.replace("Gorun", "GOrun")
+            prices = shoe.find_element(By.CSS_SELECTOR, "div.tt-price")
 
-                    addr = f"https://www.skechers.com.{place}{link}"
+            description = shoe.find_element(By.TAG_NAME, "h2").text
 
-                    if addr != f"https://www.skechers.com.{place}/collections/men#":
-                        links_list.append(addr)
-                    else:
-                        links_list.append("-")
+            if description.find("-") == -1:
+                description = link[link.find("/skechers") + 1:].replace("-", " ").title().strip()
+                description = description.replace("Gorun", "GOrun")
 
-                    price = prices.find_elements(By.TAG_NAME, "span")
-                    price_list.append(price[0].text)
-                    price_list = [price.replace("RM", "") for price in price_list]
-                    product_discription.append(description)
+            addr = f"https://www.skechers.com.{place}{link}"
 
-                    if not os.path.isfile(f"{path}/{description}.jpg"):
+            if addr != f"https://www.skechers.com.{place}/collections/men#":
+                links_list.append(addr)
+            else:
+                links_list.append("-")
 
-                        img = shoe.find_element(By.CSS_SELECTOR, "img.lazyload")
-                        img_link = img.get_attribute("data-srcset")
+            price = prices.find_elements(By.TAG_NAME, "span")
+            price_list.append(price[0].text)
+            price_list = [price.replace("RM", "") for price in price_list]
+            product_discription.append(description)
 
-                        try:
-                            indx_start = img_link.split(',')[1].find("BBK_")
-                            indx_end = img_link.split(',')[1].find(".jpg")
-                            img_link_final = img_link.split(',')[1]
-                            img_link_final = f"{img_link_final[:indx_start]}BBK_240x{img_link_final[indx_end:]}"
-                        except IndexError:
-                            indx_start = img_link.split(',')[0].find("BBK_")
-                            indx_end = img_link.split(',')[0].find(".jpg")
-                            img_link_final = img_link.split(',')[0]
-                            img_link_final = f"{img_link_final[:indx_start]}BBK_240x{img_link_final[indx_end:]}"
-                        #         img_link_final = img_link.split(',')[0]#.replace("332","240")
-                        response = requests.get(f"https:{img_link_final}")
-                        with open(f'{path}/{description}.jpg', 'wb') as file:
-                            file.write(response.content)
+            if not os.path.isfile(f"{path}/{description}.jpg"):
 
-                driver.quit()
-                break
-            except Exception as error:
-                print(f"Error in get shoes\n{error}")
+                img = shoe.find_element(By.CSS_SELECTOR, "img.lazyload")
+                img_link = img.get_attribute("data-srcset")
+
+                try:
+                    indx_start = img_link.split(',')[1].find("BBK_")
+                    indx_end = img_link.split(',')[1].find(".jpg")
+                    img_link_final = img_link.split(',')[1]
+                    img_link_final = f"{img_link_final[:indx_start]}BBK_240x{img_link_final[indx_end:]}"
+                except IndexError:
+                    indx_start = img_link.split(',')[0].find("BBK_")
+                    indx_end = img_link.split(',')[0].find(".jpg")
+                    img_link_final = img_link.split(',')[0]
+                    img_link_final = f"{img_link_final[:indx_start]}BBK_240x{img_link_final[indx_end:]}"
+                #         img_link_final = img_link.split(',')[0]#.replace("332","240")
+                response = requests.get(f"https:{img_link_final}")
+                with open(f'{path}/{description}.jpg', 'wb') as file:
+                    file.write(response.content)
         date = [today_date] * len(product_discription)
         data_dict = {
             "Date": date,
