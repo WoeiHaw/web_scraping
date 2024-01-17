@@ -1,3 +1,9 @@
+Dashboard Programme
+1. To show dashboards, you need to scrap data first.
+2. if you wish to use the dashboard without scrap data, you may download folder below.
+   https://drive.google.com/drive/folders/1h94it3FsIANj4OA68TTY9RcBr-Ybw0GN?usp=sharing
+3. Rename the folder to 'data' and placed it in same folder with other .py files.
+
 To Enable Goofle Drive functionality,please follow steps below:
 1. Create Data_back_up in your Google Drive
 2. Enable Google Drive Api using the link below
