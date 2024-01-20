@@ -63,9 +63,13 @@ class Dettol():
 
             if ("Title Guardian" in check.nan_column) | ("Price Guardian" in check.nan_column):
                 self.guardian_title, self.guardian_price = self.guardian()
+                try:
+                    price_pcs_guardian = float(self.guardian_price)/2
+                except ValueError:
+                    price_pcs_guardian = self.guardian_price
                 self.data_save_dict = {"Title Guardian": [self.guardian_title],
                                        "Price Guardian": [self.guardian_price],
-                                       "Price/pcs (Guardian)": [float(self.guardian_price) / 2]}
+                                       "Price/pcs (Guardian)": [price_pcs_guardian]}
                 Save_data(self.filename, self.data_save_dict, check.is_today_empty)
 
             if ("Title Caring" in check.nan_column) | ("Price Caring" in check.nan_column):
