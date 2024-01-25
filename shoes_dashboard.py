@@ -28,8 +28,8 @@ class Shoes_dashboard():
             my_skeachers["Description"].unique().tolist() + sg_skeachers["Description"].unique().tolist())
         unique_description = list(unique_description)
         unique_description.sort()
-        my_skeachers["Date"] = pd.to_datetime(my_skeachers["Date"], dayfirst=True)
-        sg_skeachers["Date"] = pd.to_datetime(sg_skeachers["Date"], dayfirst=True)
+        my_skeachers["Date"] = pd.to_datetime(my_skeachers["Date"], dayfirst=True, format="mixed")
+        sg_skeachers["Date"] = pd.to_datetime(sg_skeachers["Date"], dayfirst=True, format="mixed")
         max_date_my = my_skeachers["Date"].max()
         max_date_sg = my_skeachers["Date"].max()
         sg_skeachers["Price (SGD $)"] = sg_skeachers["Price (SGD $)"].apply(lambda x: x.replace("$", "")).astype(

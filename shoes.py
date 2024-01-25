@@ -1,11 +1,14 @@
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By
+from selenium.common.exceptions import NoSuchElementException
 from check_data import Check_data
 from datetime import datetime
 from save_data import Save_data
+import time
 import os
 import requests
+import re
 
 now = datetime.now()
 today_date = now.strftime("%d-%m-%Y")
@@ -34,7 +37,7 @@ class Shoes():
                 }
                 for i in range(1, last_page + 1):
                     driver.get(f"{url}?page={i}")
-                    new_data = self.get_shoes(place, driver)
+                    new_data = self.get_my_shoes(driver)
                     shoes_data["Date"] = shoes_data["Date"] + new_data["Date"]
                     shoes_data["Description"] = shoes_data["Description"] + new_data["Description"]
                     shoes_data["Price (RM)"] = shoes_data["Price (RM)"] + new_data["Price (RM)"]
@@ -53,20 +56,17 @@ class Shoes():
                     except:
                         pass
                     count += 1
-                shoes_data = self.get_shoes(place, driver)
+                shoes_data = self.get_sg_shoes(driver)
 
             driver.quit()
             Save_data(filename, shoes_data, check.is_today_empty)
 
-    def get_shoes(self, place, driver):
+    def get_sg_shoes(self, driver):
         now = datetime.now()
         today_date = now.strftime("%d-%m-%Y")
-        if place == "my":
-            currency = "RM"
-            path = "./assets/shoes images my"
-        elif place == "sg":
-            currency = "SGD $"
-            path = "./assets/shoes images sg"
+
+        currency = "SGD $"
+        path = "./assets/shoes images sg"
 
         shoes = driver.find_elements(By.XPATH, '//div[@class="col-6 col-md-3 tt-col-item"]')
 
@@ -77,24 +77,22 @@ class Shoes():
             link = shoe.find_element(By.CSS_SELECTOR, 'a').get_attribute('data-value')
 
             prices = shoe.find_element(By.CSS_SELECTOR, "div.tt-price")
-
-            description = shoe.find_element(By.TAG_NAME, "h2").text
-
-            if description.find("-") == -1:
-                description = link[link.find("/skechers") + 1:].replace("-", " ").title().strip()
-                description = description.replace("Gorun", "GOrun")
-
-            addr = f"https://www.skechers.com.{place}{link}"
-
-            if addr != f"https://www.skechers.com.{place}/collections/men#":
-                links_list.append(addr)
-            else:
-                links_list.append("-")
-
+            # prices = prices.find_elements(By.TAG_NAME, "span")[0].text
+            #         price_list.append(price[0].text)
             price = prices.find_elements(By.TAG_NAME, "span")
             price_list.append(price[0].text)
             price_list = [price.replace("RM", "") for price in price_list]
+
+            description = shoe.find_element(By.TAG_NAME, "h2").text
             product_discription.append(description)
+
+            addr = f"https://www.skechers.com.sg{link}"
+
+            if addr != f"https://www.skechers.com.sg/collections/men#":
+
+                links_list.append(addr)
+            else:
+                links_list.append("-")
 
             if not os.path.isfile(f"{path}/{description}.jpg"):
 
@@ -123,4 +121,78 @@ class Shoes():
             "Link": links_list
         }
 
+        return data_dict
+
+    def get_my_shoes(self, driver):
+        now = datetime.now()
+        today_date = now.strftime("%d-%m-%Y")
+        currency = "RM"
+        path = "./assets/shoes images my"
+
+        description_list = []
+        price_list = []
+        link_list = []
+        shoes = driver.find_elements(By.XPATH, '//div[@class="col-6 col-md-3 tt-col-item"]')
+        links = [
+            f"https://www.skechers.com.my{shoe.find_element(By.CSS_SELECTOR, 'a').get_attribute('data-value')}" for
+            shoe in shoes]
+
+        url_regex = r"(?i)\b((?:https?://|www\d{0,3}[.]|[a-z0-9.\-]+[.][a-z]{2,4}/)(?:[^\s()<>]+|\(([^\s()<>]+|(\([^\s()<>]+\)))*\))+(?:\(([^\s()<>]+|(\([^\s()<>]+\)))*\)|[^\s`!()\[\]{};:'\".,<>?«»“”‘’]))"
+
+        for link in links:
+
+            driver.get(link)
+            time.sleep(2)
+            # description = driver.find_element(By.TAG_NAME, "h1").text
+            try:
+                price = driver.find_element(By.CSS_SELECTOR, ".sale-price").text.replace("RM", "").strip()
+            except NoSuchElementException:
+                price = driver.find_element(By.CSS_SELECTOR, ".new-price").text.replace("RM", "").strip()
+
+            description = link[link.find("/skechers") + 1:].replace("-", " ").title().strip()
+            description = description.replace("Gorun", "GOrun")
+
+            # to add "-" before the shoes' model number
+            match = re.search("\d{5,6}", description)
+            description = description[:match.start() - 1] + " - " + description[match.start():]
+
+            # to add decimal for example  7 0 become 7.0
+            match_decimal = re.search("\d \d", description)
+            if match_decimal:
+                description = description[:match_decimal.start() + 1] + "." + description[match_decimal.start() + 2:]
+
+            color_container = driver.find_element(By.CSS_SELECTOR, "ul.tt-options-swatch.options-large")
+            color_elements = color_container.find_elements(By.CSS_SELECTOR, "a.options-color")
+            image_link = [element.get_attribute("style") for element in color_elements]
+
+            for i in range(len(color_elements)):
+                description_sku = ""
+                color_elements[i].click()
+                sku = driver.find_element(By.CSS_SELECTOR, "span.sku-js").text
+                color = re.search("-\D{3,5}-", sku).group()
+                # to remove the last "-" in color
+                color = color[:-1]
+
+                description_sku = description + color
+
+                description_list.append(description_sku)
+                price_list.append(price)
+                link_list.append(link)
+
+                if not os.path.isfile(f"{path}/{description_sku}.jpg"):
+                    url = re.findall(url_regex, image_link[i])[0][0].replace("100x", "332x")
+                    response = requests.get(f"https://{url}")
+                    with open(f'{path}/{description_sku}.jpg', 'wb') as file:
+                        file.write(response.content)
+
+                color_container = driver.find_element(By.CSS_SELECTOR, "ul.tt-options-swatch.options-large")
+                color_elements = color_container.find_elements(By.CSS_SELECTOR, "a.options-color")
+
+        date = [today_date] * len(description_list)
+        data_dict = {
+            "Date": date,
+            "Description": description_list,
+            f"Price ({currency})": price_list,
+            "Link": link_list
+        }
         return data_dict
