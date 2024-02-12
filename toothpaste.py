@@ -75,7 +75,7 @@ class Toothpaste():
     def guardian(self):
         try:
             driver = webdriver.Chrome(service=self.service, options=self.options)
-            url = "https://guardian.com.my/darlie-225g-po2gwp-tp-121090556.html?utm_source=google&utm_medium=seller&utm_campaign=s547820454_SS_MY_GSHP_guardianshopping2022&is_seller=true&gclid=Cj0KCQjwqs6lBhCxARIsAG8YcDgY6m831IOCWJkCVsVIQeRCtzhz4VciXumGEcleW5xOy0F4UhdWWhkaAlD6EALw_wcB&page=1"
+            url ="https://guardian.com.my/darlie-toothpaste-double-action-225g-pack-of-2.html?page=1"
             driver.get(url)
             time.sleep(2)
             driver.get(url)

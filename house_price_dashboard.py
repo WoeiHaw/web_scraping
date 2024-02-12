@@ -63,6 +63,41 @@ class HousePriceDashBoard:
 
                 ])
             ]),
+            dbc.Row([
+                dbc.Col([
+                    dbc.Card([
+                        html.H5(["No of Ads"]),
+                        html.P(id="no_ads")
+                    ],style={"height": "100%", "text-align": "center"}),
+                ]),
+                dbc.Col([
+                    dbc.Card([
+                        html.H5(["Mean Price"]),
+                        html.P(id="mean_price")
+                    ],style={"height": "100%", "text-align": "center"})
+                ]),
+                dbc.Col([
+                    dbc.Card([
+                        html.H5(["Median Price"]),
+                        html.P(id="median_price")
+                    ],style={"height": "100%", "text-align": "center"})
+
+                ]),
+                dbc.Col([
+                    dbc.Card([
+                        html.H5(["Average Price/Sq. Ft."]),
+                        html.P(id="avg_price_sqft")
+                    ],style={"height": "100%", "text-align": "center"})
+
+                ]),
+                dbc.Col([
+                    dbc.Card([
+                        html.H5(["Median Price/Sq. Ft."]),
+                        html.P(id="med_price_sqft")
+                    ],style={"height": "100%", "text-align": "center"})
+
+                ])
+            ]),
             dbc.Card([
                 dbc.Row([
 
@@ -135,6 +170,11 @@ class HousePriceDashBoard:
             return title, min_date, max_date, start_date, end_date, min_price, selector_bar
 
         @app.callback(
+            Output("no_ads", "children"),
+            Output("mean_price", "children"),
+            Output("median_price", "children"),
+            Output("avg_price_sqft", "children"),
+            Output("med_price_sqft", "children"),
             Output("bar-price", "figure"),
             Output("scatter-price", "figure"),
             Output("burst-distribution", "figure"),
@@ -167,6 +207,11 @@ class HousePriceDashBoard:
                 bar_selector = "Area"
             df_area = df.groupby(bar_selector, as_index=False).agg({"Price/Sq.ft": "median", "Date": "count"})
             df_area.rename(columns={"Date": "count", "Price/Sq.ft": "Price/Sq.ft(median)"}, inplace=True)
+            no_ads = len(df)
+            mean_price = round(df["Price"].mean(),2)
+            median_price = df["Price"].median()
+            avg_price_sqft = round(df["Price/Sq.ft"].mean(),2)
+            med_price_sqft = df["Price/Sq.ft"].median()
             bar = px.bar(
                 df_area.sort_values(by="Price/Sq.ft(median)", ascending=False if metrics_bar == "Highest" else True)[
                 :10][
@@ -257,7 +302,8 @@ class HousePriceDashBoard:
                 x=df["Price"].mean(), line_width=3, line_dash="dash", annotation_text="Mean",
                 line_color="red", annotation_position="top right", annotation_font_color="red")
 
-            return bar, scatter, burst, pie, hist
+
+            return no_ads,mean_price,median_price,avg_price_sqft,med_price_sqft, bar, scatter, burst, pie, hist
 
         thread = threading.Thread(target=app.run_server,
                                   kwargs={"port": 4005, "debug": False, "use_reloader": False})

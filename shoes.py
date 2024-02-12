@@ -84,6 +84,7 @@ class Shoes():
             price_list = [price.replace("RM", "") for price in price_list]
 
             description = shoe.find_element(By.TAG_NAME, "h2").text
+            description = description.replace("Arch FIt","Arch Fit")
             product_discription.append(description)
 
             addr = f"https://www.skechers.com.sg{link}"
@@ -167,6 +168,10 @@ class Shoes():
 
             for i in range(len(color_elements)):
                 description_sku = ""
+                if len(color_elements) == 1:
+                    match_color = re.search(r'\d{4,}',description)
+                    if match_color:
+                        description = description[:match_color.end()]
                 color_elements[i].click()
                 sku = driver.find_element(By.CSS_SELECTOR, "span.sku-js").text
                 color = re.search("-\D{3,5}-", sku).group()
@@ -174,6 +179,11 @@ class Shoes():
                 color = color[:-1]
 
                 description_sku = description + color
+                description_sku = description_sku.replace("Slip Ins","Slip-Ins").replace("Gowalk","GOwalk").replace("Usa","USA").replace("Bobs","BOBS").replace("Go Pickleball","GO Pickleball").replace("Dc Collection","DC Collection").replace("Arch FIt","Arch Fit").replace("Dc Justice","DC Justice")
+                description_lower = description_sku.lower()
+                index_skechers = description_lower.find("skechers", 10)
+                if index_skechers != -1:
+                    description_sku = description_sku[:index_skechers] + "SKECHERS" + description_sku[index_skechers + len("skechers"):]
 
                 description_list.append(description_sku)
                 price_list.append(price)
