@@ -179,7 +179,7 @@ class Shoes():
                 color = color[:-1]
 
                 description_sku = description + color
-                description_sku = description_sku.replace("Slip Ins","Slip-Ins").replace("Gowalk","GOwalk").replace("Usa","USA").replace("Bobs","BOBS").replace("Go Pickleball","GO Pickleball").replace("Dc Collection","DC Collection").replace("Arch FIt","Arch Fit").replace("Dc Justice","DC Justice")
+                description_sku = description_sku.replace("Slip Ins","Slip-Ins").replace("Gowalk","GOwalk").replace("Usa","USA").replace("Bobs","BOBS").replace("Go Pickleball","GO Pickleball").replace("Dc Collection","DC Collection").replace("Arch FIt","Arch Fit").replace("Dc Justice","DC Justice").replace("On The Go","On-The-GO").replace("Skech Air","Skech-Air").replace("Skech Lite","Skech-Lite")
                 description_lower = description_sku.lower()
                 index_skechers = description_lower.find("skechers", 10)
                 if index_skechers != -1:
