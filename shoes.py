@@ -145,10 +145,6 @@ class Shoes():
             driver.get(link)
             time.sleep(2)
             # description = driver.find_element(By.TAG_NAME, "h1").text
-            try:
-                price = driver.find_element(By.CSS_SELECTOR, ".sale-price").text.replace("RM", "").strip()
-            except NoSuchElementException:
-                price = driver.find_element(By.CSS_SELECTOR, ".new-price").text.replace("RM", "").strip()
 
             description = link[link.find("/skechers") + 1:].replace("-", " ").title().strip()
             description = description.replace("Gorun", "GOrun")
@@ -172,7 +168,13 @@ class Shoes():
                     match_color = re.search(r'\d{4,}',description)
                     if match_color:
                         description = description[:match_color.end()]
+
                 color_elements[i].click()
+                try:
+                    price = driver.find_element(By.CSS_SELECTOR, ".sale-price").text.replace("RM", "").strip()
+                except NoSuchElementException:
+                    price = driver.find_element(By.CSS_SELECTOR, ".new-price").text.replace("RM", "").strip()
+
                 sku = driver.find_element(By.CSS_SELECTOR, "span.sku-js").text
                 color = re.search("-\D{3,5}-", sku).group()
                 # to remove the last "-" in color
