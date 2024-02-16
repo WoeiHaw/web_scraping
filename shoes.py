@@ -170,10 +170,14 @@ class Shoes():
                         description = description[:match_color.end()]
 
                 color_elements[i].click()
-                try:
-                    price = driver.find_element(By.CSS_SELECTOR, ".sale-price").text.replace("RM", "").strip()
-                except NoSuchElementException:
-                    price = driver.find_element(By.CSS_SELECTOR, ".new-price").text.replace("RM", "").strip()
+                price_tt = driver.find_elements(By.CSS_SELECTOR, ".tt-price > span")
+                if len(price_tt) != 0:
+                    price = price_tt[0].text.replace("RM", "").strip()
+                else:
+                    try:
+                        price = driver.find_element(By.CSS_SELECTOR, ".sale-price").text.replace("RM", "").strip()
+                    except NoSuchElementException:
+                        price = driver.find_element(By.CSS_SELECTOR, ".new-price").text.replace("RM", "").strip()
 
                 sku = driver.find_element(By.CSS_SELECTOR, "span.sku-js").text
                 color = re.search("-\D{3,5}-", sku).group()
