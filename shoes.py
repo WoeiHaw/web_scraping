@@ -43,20 +43,23 @@ class Shoes():
                     shoes_data["Price (RM)"] = shoes_data["Price (RM)"] + new_data["Price (RM)"]
                     shoes_data["Link"] = shoes_data["Link"] + new_data["Link"]
             elif place == "sg":
-                isStop = False
-                count = 0
-                while not isStop:
-                    driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
-                    driver.implicitly_wait(2)
-                    isStop = False if count <= 100 else True
-                    try:
-                        if driver.find_element(By.XPATH,
-                                               '//div[@class="show-more tt_item_all_js"]').text == "NO MORE PRODUCTS":
-                            break
-                    except:
-                        pass
-                    count += 1
-                shoes_data = self.get_sg_shoes(driver)
+                page_elements = driver.find_elements(By.CSS_SELECTOR, ".tt-pagination >ul>li")
+                pages = []
+                last_page = int(page_elements[-1].text)
+                shoes_data = {
+                    "Date": [],
+                    "Description": [],
+                    "Price (SGD $)": [],
+                    "Link": []
+                }
+                for i in range(1, last_page + 1):
+                    driver.get(f"{url}?page={i}")
+                    new_data = self.get_sg_shoes(driver)
+                    shoes_data["Date"] = shoes_data["Date"] + new_data["Date"]
+                    shoes_data["Description"] = shoes_data["Description"] + new_data["Description"]
+                    shoes_data["Price (SGD $)"] = shoes_data["Price (SGD $)"] + new_data["Price (SGD $)"]
+                    shoes_data["Link"] = shoes_data["Link"] + new_data["Link"]
+                # shoes_data = self.get_sg_shoes(driver)
 
             driver.quit()
             Save_data(filename, shoes_data, check.is_today_empty)
@@ -81,7 +84,7 @@ class Shoes():
             #         price_list.append(price[0].text)
             price = prices.find_elements(By.TAG_NAME, "span")
             price_list.append(price[0].text)
-            price_list = [price.replace("RM", "") for price in price_list]
+            price_list = [price.replace("$", "") for price in price_list]
 
             description = shoe.find_element(By.TAG_NAME, "h2").text
             description = description.replace("Arch FIt","Arch Fit")
@@ -121,7 +124,6 @@ class Shoes():
             f"Price ({currency})": price_list,
             "Link": links_list
         }
-
         return data_dict
 
     def get_my_shoes(self, driver):
