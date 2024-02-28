@@ -22,7 +22,7 @@ class Shoes():
         if check.is_today_empty:
             # data_save_dict = self.get_shoes(place)
             # Save_data(filename, data_save_dict, check.is_today_empty)
-            url = f"https://www.skechers.com.{place}/collections/men"
+            url = f"https://www.skechers.com.{place}/collections/men-shoes"
             driver = webdriver.Chrome(service=self.service, options=self.options)
             driver.get(url)
             if place == "my":
@@ -37,7 +37,7 @@ class Shoes():
                 }
                 for i in range(1, last_page + 1):
                     driver.get(f"{url}?page={i}")
-                    new_data = self.get_my_shoes(driver)
+                    new_data = self.get_shoes(driver,place)
                     shoes_data["Date"] = shoes_data["Date"] + new_data["Date"]
                     shoes_data["Description"] = shoes_data["Description"] + new_data["Description"]
                     shoes_data["Price (RM)"] = shoes_data["Price (RM)"] + new_data["Price (RM)"]
@@ -45,6 +45,7 @@ class Shoes():
             elif place == "sg":
                 page_elements = driver.find_elements(By.CSS_SELECTOR, ".tt-pagination >ul>li")
                 pages = []
+
                 last_page = int(page_elements[-1].text)
                 shoes_data = {
                     "Date": [],
@@ -54,7 +55,7 @@ class Shoes():
                 }
                 for i in range(1, last_page + 1):
                     driver.get(f"{url}?page={i}")
-                    new_data = self.get_sg_shoes(driver)
+                    new_data = self.get_shoes(driver,place)
                     shoes_data["Date"] = shoes_data["Date"] + new_data["Date"]
                     shoes_data["Description"] = shoes_data["Description"] + new_data["Description"]
                     shoes_data["Price (SGD $)"] = shoes_data["Price (SGD $)"] + new_data["Price (SGD $)"]
@@ -64,80 +65,23 @@ class Shoes():
             driver.quit()
             Save_data(filename, shoes_data, check.is_today_empty)
 
-    def get_sg_shoes(self, driver):
+    def get_shoes(self, driver,place):
         now = datetime.now()
         today_date = now.strftime("%d-%m-%Y")
 
-        currency = "SGD $"
-        path = "./assets/shoes images sg"
-
-        shoes = driver.find_elements(By.XPATH, '//div[@class="col-6 col-md-3 tt-col-item"]')
-
-        product_discription = []
-        links_list = []
-        price_list = []
-        for shoe in shoes:
-            link = shoe.find_element(By.CSS_SELECTOR, 'a').get_attribute('data-value')
-
-            prices = shoe.find_element(By.CSS_SELECTOR, "div.tt-price")
-            # prices = prices.find_elements(By.TAG_NAME, "span")[0].text
-            #         price_list.append(price[0].text)
-            price = prices.find_elements(By.TAG_NAME, "span")
-            price_list.append(price[0].text)
-            price_list = [price.replace("$", "") for price in price_list]
-
-            description = shoe.find_element(By.TAG_NAME, "h2").text
-            description = description.replace("Arch FIt","Arch Fit")
-            product_discription.append(description)
-
-            addr = f"https://www.skechers.com.sg{link}"
-
-            if addr != f"https://www.skechers.com.sg/collections/men#":
-
-                links_list.append(addr)
-            else:
-                links_list.append("-")
-
-            if not os.path.isfile(f"{path}/{description}.jpg"):
-
-                img = shoe.find_element(By.CSS_SELECTOR, "img.lazyload")
-                img_link = img.get_attribute("data-srcset")
-
-                try:
-                    indx_start = img_link.split(',')[1].find("BBK_")
-                    indx_end = img_link.split(',')[1].find(".jpg")
-                    img_link_final = img_link.split(',')[1]
-                    img_link_final = f"{img_link_final[:indx_start]}BBK_240x{img_link_final[indx_end:]}"
-                except IndexError:
-                    indx_start = img_link.split(',')[0].find("BBK_")
-                    indx_end = img_link.split(',')[0].find(".jpg")
-                    img_link_final = img_link.split(',')[0]
-                    img_link_final = f"{img_link_final[:indx_start]}BBK_240x{img_link_final[indx_end:]}"
-                #         img_link_final = img_link.split(',')[0]#.replace("332","240")
-                response = requests.get(f"https:{img_link_final}")
-                with open(f'{path}/{description}.jpg', 'wb') as file:
-                    file.write(response.content)
-        date = [today_date] * len(product_discription)
-        data_dict = {
-            "Date": date,
-            "Description": product_discription,
-            f"Price ({currency})": price_list,
-            "Link": links_list
-        }
-        return data_dict
-
-    def get_my_shoes(self, driver):
-        now = datetime.now()
-        today_date = now.strftime("%d-%m-%Y")
-        currency = "RM"
-        path = "./assets/shoes images my"
+        if place == "sg":
+            currency = "SGD $"
+            path = "./assets/shoes images sg"
+        elif place == "my":
+            currency = "RM"
+            path = "./assets/shoes images my"
 
         description_list = []
         price_list = []
         link_list = []
         shoes = driver.find_elements(By.XPATH, '//div[@class="col-6 col-md-3 tt-col-item"]')
         links = [
-            f"https://www.skechers.com.my{shoe.find_element(By.CSS_SELECTOR, 'a').get_attribute('data-value')}" for
+            f"https://www.skechers.com.{place}{shoe.find_element(By.CSS_SELECTOR, 'a').get_attribute('data-value')}" for
             shoe in shoes]
 
         url_regex = r"(?i)\b((?:https?://|www\d{0,3}[.]|[a-z0-9.\-]+[.][a-z]{2,4}/)(?:[^\s()<>]+|\(([^\s()<>]+|(\([^\s()<>]+\)))*\))+(?:\(([^\s()<>]+|(\([^\s()<>]+\)))*\)|[^\s`!()\[\]{};:'\".,<>?«»“”‘’]))"
@@ -148,12 +92,13 @@ class Shoes():
             time.sleep(2)
             # description = driver.find_element(By.TAG_NAME, "h1").text
 
-            description = link[link.find("/skechers") + 1:].replace("-", " ").title().strip()
+            description = link[link.find("products/") + 9:].replace("-", " ").title().strip()
             description = description.replace("Gorun", "GOrun")
 
-            # to add "-" before the shoes' model number
-            match = re.search("\d{5,6}", description)
-            description = description[:match.start() - 1] + " - " + description[match.start():]
+
+            match = re.search("\d{4,}", description)
+            description = description[:match.start()].strip()
+
 
             # to add decimal for example  7 0 become 7.0
             match_decimal = re.search("\d \d", description)
@@ -165,33 +110,38 @@ class Shoes():
             image_link = [element.get_attribute("style") for element in color_elements]
 
             for i in range(len(color_elements)):
-                description_sku = ""
+
                 if len(color_elements) == 1:
-                    match_color = re.search(r'\d{4,}',description)
+                    match_color = re.search(r'\d{4,}', description)
                     if match_color:
                         description = description[:match_color.end()]
 
                 color_elements[i].click()
                 price_tt = driver.find_elements(By.CSS_SELECTOR, ".tt-price > span")
-                if len(price_tt) != 0:
-                    price = price_tt[0].text.replace("RM", "").strip()
-                else:
-                    try:
-                        price = driver.find_element(By.CSS_SELECTOR, ".sale-price").text.replace("RM", "").strip()
-                    except NoSuchElementException:
-                        price = driver.find_element(By.CSS_SELECTOR, ".new-price").text.replace("RM", "").strip()
+
+                price = price_tt[0].text.replace("$", "").replace("RM","").strip()
 
                 sku = driver.find_element(By.CSS_SELECTOR, "span.sku-js").text
-                color = re.search("-\D{3,5}-", sku).group()
-                # to remove the last "-" in color
-                color = color[:-1]
 
-                description_sku = description + color
-                description_sku = description_sku.replace("Slip Ins","Slip-Ins").replace("Men Go Consistent On The Go","Men On-The-GO GO Consistent").replace("Gowalk","GOwalk").replace("Usa","USA").replace("Bobs","BOBS").replace("Go Pickleball","GO Pickleball").replace("Dc Collection","DC Collection").replace("Arch FIt","Arch Fit").replace("Dc Justice","DC Justice").replace("On The Go Go","On-The-GO GO").replace("Skech Air","Skech-Air").replace("Skech Lite","Skech-Lite").replace("Dlites","D'Lites").replace("Dlux","D'Lux").replace("On The Go","On-The-GO")
+                sku_description = sku.replace("SKU:", "").strip()
+                size = re.search("-\d{1,2}", sku_description)
+
+                sku_description = sku_description[:size.start()]
+                description_sku = description + " - " + sku_description
+                description_sku = description_sku.replace("Slip Ins", "Slip-Ins").replace("Men Go Consistent On The Go",
+                                                                                          "Men On-The-GO GO Consistent").replace(
+                    "Gowalk", "GOwalk").replace("Usa", "USA").replace("Bobs", "BOBS").replace("Go Pickleball",
+                                                                                              "GO Pickleball").replace(
+                    "Dc Collection", "DC Collection").replace("Arch FIt", "Arch Fit").replace("Dc Justice",
+                                                                                              "DC Justice").replace(
+                    "On The Go Go", "On-The-GO GO").replace("Skech Air", "Skech-Air").replace("Skech Lite",
+                                                                                              "Skech-Lite").replace(
+                    "Dlites", "D'Lites").replace("Dlux", "D'Lux").replace("On The Go", "On-The-GO").replace("Dc Comics","DC Comics").replace("Tres Air","Tres-Air")
                 description_lower = description_sku.lower()
                 index_skechers = description_lower.find("skechers", 10)
                 if index_skechers != -1:
-                    description_sku = description_sku[:index_skechers] + "SKECHERS" + description_sku[index_skechers + len("skechers"):]
+                    description_sku = description_sku[:index_skechers] + "SKECHERS" + description_sku[
+                                                                                      index_skechers + len("skechers"):]
 
                 description_list.append(description_sku)
                 price_list.append(price)
