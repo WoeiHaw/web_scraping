@@ -69,7 +69,7 @@ class Job_info():
         # driver = webdriver.Chrome(service=self.service, options=self.options)
         driver.get(f"https://www.jobstreet.com.{country}/data-science-jobs?page={page}")
         time.sleep(4)
-        links = driver.find_elements(By.CSS_SELECTOR, 'h3 > a')
+        links = driver.find_elements(By.CSS_SELECTOR, '[data-automation="job-list-view-job-link"]')
         links_list = [link.get_attribute('href') for link in links]
         checked_link_list = []
 
