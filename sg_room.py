@@ -29,7 +29,7 @@ class Sg_room():
                 driver = webdriver.Chrome(service=self.service, options=self.options)
 
             except Exception as error:
-                print(f"Error in get_house\n{error}")
+                print(f"Error in get_main_page\n{error}")
 
         # for num_location in range(len(locations_text) - 1):
         no_error = False
@@ -68,7 +68,7 @@ class Sg_room():
 
                 except Exception as error:
 
-                    print(f"Error in get_house\n{error}")
+                    print(f"Error in get_location_page\n{error}")
 
             print(locations_text[num_location])
             print(len(links_for_house))

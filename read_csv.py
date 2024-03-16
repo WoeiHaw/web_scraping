@@ -9,18 +9,20 @@ class Read_csv():
             self.data = pd.DataFrame()
 
     def get_links(self):
+        link_column = ""
 
         if len(self.data) == 0:
             return []
         else:
-            global link_column
+            # global link_column
             for column in self.data:
+                print(column)
                 count = 0
-                if len(self.data):
-                    num_sample = len(self.data)
-                else:
-                    num_sample = 5
-                column_check = self.data[column].sample(num_sample)
+                # if len(self.data):
+                #     num_sample = len(self.data)
+                # else:
+                #     num_sample = 5
+                column_check = self.data[column].sample(10)
 
                 for i in range(len(column_check)):
 
@@ -28,10 +30,9 @@ class Read_csv():
                         if column_check.iloc[i].find("https:") != -1:
                             count += 1
 
-                        if count == num_sample:
+                        if count == 10:
                             link_column = column
                             break
-
             return self.data[link_column].tolist()
 
     def get_jobid(self):
