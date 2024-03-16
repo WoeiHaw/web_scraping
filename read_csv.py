@@ -16,7 +16,6 @@ class Read_csv():
         else:
             # global link_column
             for column in self.data:
-                print(column)
                 count = 0
                 # if len(self.data):
                 #     num_sample = len(self.data)
