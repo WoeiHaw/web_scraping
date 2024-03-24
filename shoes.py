@@ -27,53 +27,36 @@ class Shoes():
             driver.get(url)
             if place == "my":
                 page_elements = driver.find_elements(By.CSS_SELECTOR, ".tt-pagination >ul>li")
-                pages = []
                 last_page = int(page_elements[-1].text)
-                shoes_data = {
-                    "Date": [],
-                    "Description": [],
-                    "Price (RM)": [],
-                    "Link": []
-                }
-                for i in range(1, last_page + 1):
-                    driver.get(f"{url}?page={i}")
-                    new_data = self.get_shoes(driver,place)
-                    shoes_data["Date"] = shoes_data["Date"] + new_data["Date"]
-                    shoes_data["Description"] = shoes_data["Description"] + new_data["Description"]
-                    shoes_data["Price (RM)"] = shoes_data["Price (RM)"] + new_data["Price (RM)"]
-                    shoes_data["Link"] = shoes_data["Link"] + new_data["Link"]
+
             elif place == "sg":
                 page_elements = driver.find_elements(By.CSS_SELECTOR, ".tt-pagination >ul>li")
-                pages = []
-
                 last_page = int(page_elements[-1].text)
-                shoes_data = {
-                    "Date": [],
-                    "Description": [],
-                    "Price (SGD $)": [],
-                    "Link": []
-                }
-                for i in range(1, last_page + 1):
-                    driver.get(f"{url}?page={i}")
-                    new_data = self.get_shoes(driver,place)
-                    shoes_data["Date"] = shoes_data["Date"] + new_data["Date"]
-                    shoes_data["Description"] = shoes_data["Description"] + new_data["Description"]
-                    shoes_data["Price (SGD $)"] = shoes_data["Price (SGD $)"] + new_data["Price (SGD $)"]
-                    shoes_data["Link"] = shoes_data["Link"] + new_data["Link"]
-                # shoes_data = self.get_sg_shoes(driver)
+            shoes_data = {
+                "Date": [],
+                "Description": [],
+                "Price": [],
+                "Link": []
+            }
+            for i in range(1, last_page + 1):
+                driver.get(f"{url}?page={i}")
+                new_data = self.get_shoes(driver,place)
+                shoes_data["Date"] = shoes_data["Date"] + new_data["Date"]
+                shoes_data["Description"] = shoes_data["Description"] + new_data["Description"]
+                shoes_data["Price"] = shoes_data["Price"] + new_data["Price"]
+                shoes_data["Link"] = shoes_data["Link"] + new_data["Link"]
+            # shoes_data = self.get_sg_shoes(driver)
 
             driver.quit()
-            Save_data(filename, shoes_data, check.is_today_empty)
+            Save_data(filename, shoes_data, check.is_today_empty,shoes_data=True)
 
     def get_shoes(self, driver,place):
         now = datetime.now()
         today_date = now.strftime("%d-%m-%Y")
 
         if place == "sg":
-            currency = "SGD $"
             path = "./assets/shoes images sg"
         elif place == "my":
-            currency = "RM"
             path = "./assets/shoes images my"
 
         description_list = []
@@ -160,7 +143,7 @@ class Shoes():
         data_dict = {
             "Date": date,
             "Description": description_list,
-            f"Price ({currency})": price_list,
+            f"Price": price_list,
             "Link": link_list
         }
         return data_dict

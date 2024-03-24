@@ -17,38 +17,23 @@ warnings.simplefilter(action='ignore', category=FutureWarning)
 class Shoes_dashboard():
     def __init__(self, filepath):
         self.filepath = filepath
-
         dbc_css = "https://cdn.jsdelivr.net/gh/AnnMarieW/dash-bootstrap-templates/dbc.min.css"
         load_figure_template("SLATE")
         self.app = Dash(__name__, external_stylesheets=[dbc.themes.SLATE, dbc_css])
 
         my_skeachers = pd.read_csv(f"{filepath}skechers_shoes_MY.csv")
         sg_skeachers = pd.read_csv(f"{filepath}skechers_shoes_SG.csv")
-        unique_description = set(
-            my_skeachers["Description"].unique().tolist() + sg_skeachers["Description"].unique().tolist())
-        unique_description = list(unique_description)
-        unique_description.sort()
+
         my_skeachers["Date"] = pd.to_datetime(my_skeachers["Date"], dayfirst=True, format="mixed")
         sg_skeachers["Date"] = pd.to_datetime(sg_skeachers["Date"], dayfirst=True, format="mixed")
-        max_date_my = my_skeachers["Date"].max()
-        max_date_sg = my_skeachers["Date"].max()
-        sg_skeachers["Price (SGD $)"] = sg_skeachers["Price (SGD $)"].apply(lambda x: x.replace("$", "")).astype(
-            "float")
 
-        my_skeachers_latest = my_skeachers.loc[my_skeachers["Date"] == max_date_my].copy()
-        sg_skeachers_latest = sg_skeachers.loc[sg_skeachers["Date"] == max_date_sg].copy()
+        unique_description = set(list(my_skeachers.columns[1:]) + list(sg_skeachers.columns[1:]))
+        unique_description = list(unique_description)
+        unique_description.sort()
 
-        # all_skechers_latest = my_skeachers_latest.merge(sg_skeachers_latest, how="outer", suffixes=("_my", "_sg"))
-        #
-        # my_skeachers_latest.drop(["Date", "Link"], axis=1, inplace=True)
-        # sg_skeachers_latest.drop(["Date", "Link"], axis=1, inplace=True)
-        #
-        # compare_df = sg_skeachers_latest.merge(my_skeachers_latest, how="inner", on="Description")
-        # compare_df["Difference(RM)"] = compare_df["Price (RM)"] - compare_df["Price (SGD $)"] * 3.45
+        sg_link_df = pd.read_csv(f"{filepath}SG Skechers Link.csv")
+        my_link_df = pd.read_csv(f"{filepath}MY Skechers Link.csv")
 
-        # item_num = {"Country": ["Malaysia", "Singapore"],
-        #             "Number of items": [len(my_skeachers_latest), len(sg_skeachers_latest)]}
-        # item_count_df = pd.DataFrame(item_num)
         self.app.layout = html.Div([
             dcc.Tabs([
                 dcc.Tab(
@@ -106,7 +91,8 @@ class Shoes_dashboard():
                         ),
                         dbc.Row([
                             dbc.Col([
-                                dbc.Card([html.Img(id="img_path", style={"width": f"{100*5/12}%", "height": f"{100*5/12}%"})]),
+                                dbc.Card([html.Img(id="img_path",
+                                                   style={"width": f"{100 * 5 / 12}%", "height": f"{100 * 5 / 12}%"})]),
                                 dbc.Card([dash_table.DataTable(
                                     id="compare_table",
                                     style_header={
@@ -129,8 +115,8 @@ class Shoes_dashboard():
                             ], width=5),
 
                             dbc.Col([
-                            dcc.Graph(id="sg_line"),
-                            dcc.Graph(id="my_line")
+                                dcc.Graph(id="sg_line"),
+                                dcc.Graph(id="my_line")
                             ], width=7)
                         ])
 
@@ -152,19 +138,26 @@ class Shoes_dashboard():
         def get_data_table(metric, end_date, start_date):
             global df
 
-            my_skeachers_end_date = my_skeachers.loc[my_skeachers["Date"] == end_date].copy()
-            sg_skeachers_end_date = sg_skeachers.loc[sg_skeachers["Date"] == end_date].copy()
+            my_skeachers_latest = my_skeachers.loc[my_skeachers["Date"] == end_date].dropna(axis="columns")
+            sg_skeachers_latest = sg_skeachers.loc[sg_skeachers["Date"] == end_date].dropna(axis="columns")
 
-            my_skeachers_end_date.drop(["Date", "Link"], axis=1, inplace=True)
-            sg_skeachers_end_date.drop(["Date", "Link"], axis=1, inplace=True)
+            # to get the common items between two conuries (intesection)
+            description_compare = list(set(sg_skeachers_latest.columns[1:]) & set(my_skeachers_latest.columns[1:]))
 
-            compare_df = sg_skeachers_end_date.merge(my_skeachers_end_date, how="inner", on="Description")
-            compare_df["Difference(RM)"] = compare_df["Price (RM)"] - compare_df["Price (SGD $)"] * 3.55
+            # to build compare_df
+            price_sgd = [sg_skeachers_latest[item].values[0] for item in description_compare]
+            price_myr = [my_skeachers_latest[item].values[0] for item in description_compare]
+            difference_myr = [round(price_myr[i] - price_sgd[i] * 3.55, 2) for i in range(len(price_sgd))]
+            compare_df_dict = {"Description": description_compare, "Prcie (SGD $)": price_sgd, "Price (RM)": price_myr,
+                               "Difference(RM)": difference_myr}
+            compare_df = pd.DataFrame(compare_df_dict)
 
             item_num = {"Country": ["Malaysia", "Singapore"],
                         "Number of items": [
-                            my_skeachers.query("@start_date<=Date <= @end_date")["Description"].nunique(),
-                            sg_skeachers.query("@start_date<=Date <= @end_date")["Description"].nunique()
+                            len(my_skeachers.query("@start_date<=Date <= @end_date").dropna(axis="columns",
+                                                                                            how="all").columns) - 1,
+                            len(sg_skeachers.query("@start_date<=Date <= @end_date").dropna(axis="columns",
+                                                                                            how="all").columns) - 1
                         ]
                         # [len(my_skeachers_end_date), len(sg_skeachers_end_date)]
                         }
@@ -192,6 +185,7 @@ class Shoes_dashboard():
                 y="Number of items",
 
             )
+
             return columns, data, [0], bar_graph
 
         @self.app.callback(
@@ -202,12 +196,17 @@ class Shoes_dashboard():
             Input("date_picker", "end_date"),
         )
         def compare_line_graph(selected_row, start_date, end_date):
+
             description = df.iloc[selected_row[0]]["Description"]
+            plot_my_skeachers = my_skeachers.loc[:, ["Date", description]].dropna()
             my_line = px.line(
-                my_skeachers.query("Description == @description and  @start_date <= Date<= @end_date"),
+                plot_my_skeachers.query("@start_date<= Date <= @end_date"),
                 x="Date",
-                y="Price (RM)",
-                title=f"{description} Price (RM)"
+                y=description,
+                title=f"{description} Price (RM)",
+                labels={
+                    description: "Prcie (RM)"
+                }
             ).update_layout(
                 title={
                     "x": 0.5,
@@ -217,11 +216,15 @@ class Shoes_dashboard():
                 }
             )
 
+            plot_sg_skeachers = sg_skeachers.loc[:, ["Date", description]].dropna()
             sg_line = px.line(
-                sg_skeachers.query("Description == @description and  @start_date<= Date <= @end_date"),
+                plot_sg_skeachers.query("@start_date<= Date <= @end_date"),
                 x="Date",
-                y="Price (SGD $)",
+                y=description,
                 title=f"{description} Price (SGD $)",
+                labels={
+                    description: "Price (SGD)"
+                }
             ).update_layout(
                 title={
                     "x": 0.5,
@@ -234,7 +237,7 @@ class Shoes_dashboard():
         @self.app.callback(
             Output("compare_table", "columns"),
             Output("compare_table", "data"),
-            Output("img_path", "src"),
+            # Output("img_path", "src"),
             Output("sg_link", "children"),
             Output("my_link", "children"),
             Output("sg_line", "figure"),
@@ -243,57 +246,57 @@ class Shoes_dashboard():
             Input("shoes_filter", "value")
         )
         def shoes_compare(shoes):
-            shoes_data_my = my_skeachers_latest.loc[my_skeachers_latest["Description"] == shoes]
-            shoes_data_sg = sg_skeachers_latest.loc[sg_skeachers_latest["Description"] == shoes]
+            my_skeachers_latest = my_skeachers.loc[my_skeachers["Date"] == my_skeachers["Date"].max()].dropna(
+                axis="columns")
+            sg_skeachers_latest = sg_skeachers.loc[sg_skeachers["Date"] == sg_skeachers["Date"].max()].dropna(
+                axis="columns")
+            current_price_my = "-" if shoes not in my_skeachers_latest else my_skeachers_latest[shoes].values[0]
+            current_price_sg = "-" if shoes not in sg_skeachers_latest else sg_skeachers_latest[shoes].values[0]
 
-            price_my = "-" if len(shoes_data_my) == 0 else shoes_data_my["Price (RM)"].values[0]
-            price_sg = "-" if len(shoes_data_sg) == 0 else shoes_data_sg["Price (SGD $)"].values[0]
-            max_price_sg = "-" if len(sg_skeachers.loc[sg_skeachers["Description"] == shoes]) == 0 else \
-                sg_skeachers[sg_skeachers["Description"] == shoes]["Price (SGD $)"].max()
-            min_price_sg = "-" if len(sg_skeachers.loc[sg_skeachers["Description"] == shoes]) == 0 else \
-                sg_skeachers[sg_skeachers["Description"] == shoes]["Price (SGD $)"].min()
-            max_price_my = "-" if len(my_skeachers.loc[my_skeachers["Description"] == shoes]) == 0 else \
-                my_skeachers[my_skeachers["Description"] == shoes]["Price (RM)"].max()
-            min_price_my = "-" if len(my_skeachers.loc[my_skeachers["Description"] == shoes]) == 0 else \
-                my_skeachers[my_skeachers["Description"] == shoes]["Price (RM)"].min()
-            max_price_date_my = "-" if len(my_skeachers.loc[my_skeachers["Description"] == shoes]) == 0 else \
-                my_skeachers.query("Description == @shoes and `Price (RM)` == @max_price_my")["Date"].iloc[-1].strftime(
-                    '%d-%b-%Y')
-            min_price_date_my = "-" if len(my_skeachers.loc[my_skeachers["Description"] == shoes]) == 0 else \
-                my_skeachers.query("Description == @shoes and `Price (RM)` == @min_price_my")["Date"].iloc[-1].strftime(
-                    '%d-%b-%Y')
-            max_price_date_sg = "-" if len(sg_skeachers.loc[sg_skeachers["Description"] == shoes]) == 0 else \
-                sg_skeachers.query("Description == @shoes and `Price (SGD $)` == @max_price_sg")["Date"].iloc[
-                    -1].strftime(
-                    '%d-%b-%Y')
-            min_price_date_sg = "-" if len(sg_skeachers.loc[sg_skeachers["Description"] == shoes]) == 0 else \
-                sg_skeachers.query("Description == @shoes and `Price (SGD $)` == @min_price_sg")["Date"].iloc[
-                    -1].strftime(
-                    '%d-%b-%Y')
+            max_price_sg = "-" if shoes not in sg_skeachers else sg_skeachers[shoes].max()
+            min_price_sg = "-" if shoes not in sg_skeachers else sg_skeachers[shoes].min()
+
+            max_price_my = "-" if shoes not in my_skeachers else my_skeachers[shoes].max()
+            min_price_my = "-" if shoes not in my_skeachers else my_skeachers[shoes].min()
+
+            max_price_date_my = "-" if shoes not in my_skeachers else my_skeachers \
+                .loc[my_skeachers[shoes] == my_skeachers[shoes].max(), "Date"].iloc[-1].strftime('%d-%b-%Y')
+
+            min_price_date_my = "-" if shoes not in my_skeachers else my_skeachers \
+                .loc[my_skeachers[shoes] == my_skeachers[shoes].min(), "Date"].iloc[-1].strftime('%d-%b-%Y')
+
+            max_price_date_sg = "-" if shoes not in sg_skeachers else sg_skeachers \
+                .loc[sg_skeachers[shoes] == sg_skeachers[shoes].max(), "Date"].iloc[-1].strftime('%d-%b-%Y')
+
+            min_price_date_sg = "-" if shoes not in sg_skeachers else sg_skeachers \
+                .loc[sg_skeachers[shoes] == sg_skeachers[shoes].min(), "Date"].iloc[-1].strftime('%d-%b-%Y')
+
             table_df = pd.DataFrame(
                 {"Metric": ["Current Price", "Maximum Price", "Minimum Price", "Max Price Date", "Min Price Date"],
-                 "Malaysia": [price_my, max_price_my, min_price_my, max_price_date_my, min_price_date_my],
-                 "Singapore": [price_sg, max_price_sg, min_price_sg, max_price_date_sg, min_price_date_sg]})
+                 "Malaysia": [current_price_my, max_price_my, min_price_my, max_price_date_my, min_price_date_my],
+                 "Singapore": [current_price_sg, max_price_sg, min_price_sg, max_price_date_sg, min_price_date_sg]})
 
             columns = [{"name": i, "id": i} for i in table_df.columns]
             data = table_df.to_dict("records")
 
-            img_file = f"{shoes}.jpg"
-            img_path = os.path.join("./assets/shoes images sg", img_file)
-            if os.path.exists(img_path):
-                src = self.app.get_asset_url(f"shoes images sg/{img_file}")
-            else:
-                src = self.app.get_asset_url(f"shoes images my/{img_file}")
-            sg_link = "-" if len(sg_skeachers.loc[sg_skeachers["Description"] == shoes]) == 0 else \
-                sg_skeachers.loc[sg_skeachers["Description"] == shoes, "Link"].iloc[-1]
-            my_link = "-" if len(my_skeachers.loc[my_skeachers["Description"] == shoes]) == 0 else \
-                my_skeachers.loc[my_skeachers["Description"] == shoes, "Link"].iloc[-1]
+            sg_link = "-" if shoes not in sg_skeachers else \
+                sg_link_df.loc[sg_link_df["Description"] == shoes, "link"].values[0]
 
+            my_link = "-" if shoes not in my_skeachers else \
+                my_link_df.loc[my_link_df["Description"] == shoes, "link"].values[0]
+
+            plot_sg_shoes = sg_skeachers[["Date", shoes]].dropna() if shoes in sg_skeachers else pd.DataFrame(
+                {"Date": [], shoes: []})
+            plot_my_shoes = my_skeachers[["Date", shoes]].dropna() if shoes in my_skeachers else pd.DataFrame(
+                {"Date": [], shoes: []})
             sg_line = px.line(
-                sg_skeachers.query("Description == @shoes"),
+                plot_sg_shoes,
                 x="Date",
-                y="Price (SGD $)",
-                title="Singapore Skeacher Price"
+                y=shoes,
+                title="Singapore Skeacher Price",
+                labels={
+                    shoes: "Price (SGD)"
+                }
             ).update_layout(
                 title={
                     "x": 0.5,
@@ -304,10 +307,13 @@ class Shoes_dashboard():
             )
 
             my_line = px.line(
-                my_skeachers.query("Description == @shoes"),
+                plot_my_shoes,
                 x="Date",
-                y="Price (RM)",
-                title="Malaysia Skeacher Price"
+                y=shoes,
+                title="Malaysia Skeacher Price",
+                labels={
+                    shoes: "Price (MYR)"
+                }
             ).update_layout(
                 title={
                     "x": 0.5,
@@ -318,10 +324,27 @@ class Shoes_dashboard():
             )
 
             title = f"{shoes} Dashboard"
+            return columns, data, sg_link, my_link, sg_line, my_line, title
 
-            return columns, data, src, sg_link, my_link, sg_line, my_line, title
+        @self.app.callback(
+            Output("img_path", "src"),
+            Input("shoes_filter", "value")
+        )
+        def get_image(shoes):
+            img_file = f"{shoes}.jpg"
+            img_path_sg = os.path.join("./assets/shoes images sg", img_file)
+            img_path_my = os.path.join("./assets/shoes images my", img_file)
+            if os.path.exists(img_path_sg):
+                src = self.app.get_asset_url(f"shoes images sg/{img_file}")
+                return src
+            elif os.path.exists(img_path_my):
+                src = self.app.get_asset_url(f"shoes images my/{img_file}")
+                return src
+            else:
+                raise PreventUpdate
 
         webbrowser.open('http://127.0.0.1:4000/')
+
 
     def run(self):
         # Run the Dash app in a separate thread
