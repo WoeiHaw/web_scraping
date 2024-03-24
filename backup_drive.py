@@ -15,7 +15,7 @@ class Backup_drive():
                     "kopi o price", "Malaysia Job", "Nivea Man", "sg rental",
                     "shampoo price", "Singapore Job", "skechers_shoes_MY", "skechers_shoes_SG", "sg rental(processed)",
                     "Singapore Job(Processed)", "Malaysia Job(Processed)", "House Price kl(Processed)",
-                    "House Price JB(Processed)"]
+                    "House Price JB(Processed)","MY Skechers Link","SG Skechers Link"]
         folder_list = drive.ListFile(
             {
                 'q': "title='Data_back_up'  and mimeType='application/vnd.google-apps.folder' and trashed=false"}).GetList()

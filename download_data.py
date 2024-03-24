@@ -25,7 +25,7 @@ class Download_data():
                     "kopi o price", "Malaysia Job", "Nivea Man", "sg rental",
                     "shampoo price", "Singapore Job", "skechers_shoes_MY", "skechers_shoes_SG", "sg rental(processed)",
                     "Singapore Job(Processed)", "Malaysia Job(Processed)", "House Price JB(Processed)",
-                    "House Price kl(Processed)"]
+                    "House Price kl(Processed)","MY Skechers Link","SG Skechers Link"]
 
         # List files in the specified folder
         folder_list = drive.ListFile(
