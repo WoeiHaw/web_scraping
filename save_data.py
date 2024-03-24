@@ -36,16 +36,17 @@ class Save_data():
                         shoes_df.loc[mask, description] = price
                         link_df.loc[link_df["Description"] == description, "link"] = link
                     else:
+                        data_len = len(link_df)
                         shoes_df[description] = ""
                         shoes_df.loc[mask, description] = price
-                        link_df.loc[mask, "Description"] = description
-                        link_df.loc[mask, "link"] = link
+                        link_df.loc[data_len, "Description"] = description
+                        link_df.loc[data_len, "link"] = link
             else:
                 shoes_df = pd.DataFrame()
                 link_df = pd.DataFrame(columns=["Description", "link"])
                 shoes_df["Date"] = data_save_dict["Date"][0]
                 # mask = shoes_df["Date"] == data_save_dict["Date"][0]
-                for i in range(len(data_save_dict)):
+                for i in range(len(data_save_dict["Description"])):
                     description = data_save_dict["Description"][i]
                     price = data_save_dict["Price"][i]
                     link = data_save_dict["Link"][i]
