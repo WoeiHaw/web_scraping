@@ -98,12 +98,14 @@ class Shapoo():
             driver.get('https://www.lotuss.com.my/en/product/hns-shp-men-cool-menthol-480ml-73817120')
             time.sleep(5)
             lotus_title = driver.find_element(By.CSS_SELECTOR, "h1").text
-            lotus_price = driver.find_element(By.XPATH,
-                                              '//*[@id="spa-root"]/div/div[1]/div[3]/div[1]/div/div[1]/div[1]/div[2]/div[4]/div[1]').text
-            lotus_price = lotus_price.split("/")[0].replace("RM", "")
+            product_details = driver.find_elements(By.CSS_SELECTOR,"div.MuiGrid-root.jss58.MuiGrid-item.MuiGrid-grid-xs-12.MuiGrid-grid-md-7 > div")
+
+            lotus_price = product_details[2].text
+            lotus_price = lotus_price.replace("RM", "").replace("/Each","")
+
             driver.quit()
             return lotus_title, lotus_price
         except Exception as error:
-            print(f"guardian error(Shampoo):\n{error}")
+            print(f"lotus error(Shampoo):\n{error}")
             return "", ""
 

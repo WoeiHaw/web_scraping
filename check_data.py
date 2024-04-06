@@ -9,7 +9,6 @@ class Check_data():
         self.nan_column = []
         try:
             data = pd.read_csv(file_name)
-
             data["Date"] = data["Date"].apply(lambda x: x.replace("/","-"))
             #now = pd.to_datetime(TODAY_DATE, format="%d-%m-%Y")
 

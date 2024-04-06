@@ -25,13 +25,11 @@ class Shoes():
             url = f"https://www.skechers.com.{place}/collections/men-shoes"
             driver = webdriver.Chrome(service=self.service, options=self.options)
             driver.get(url)
-            if place == "my":
-                page_elements = driver.find_elements(By.CSS_SELECTOR, ".tt-pagination >ul>li")
-                last_page = int(page_elements[-1].text)
 
-            elif place == "sg":
-                page_elements = driver.find_elements(By.CSS_SELECTOR, ".tt-pagination >ul>li")
-                last_page = int(page_elements[-1].text)
+            page_elements = driver.find_elements(By.CSS_SELECTOR, ".tt-pagination >ul>li")
+            last_page = int(page_elements[-1].text)
+
+
             shoes_data = {
                 "Date": [],
                 "Description": [],
