@@ -85,57 +85,59 @@ class Shoes():
             match_decimal = re.search("\d \d", description)
             if match_decimal:
                 description = description[:match_decimal.start() + 1] + "." + description[match_decimal.start() + 2:]
-
-            color_container = driver.find_element(By.CSS_SELECTOR, "ul.tt-options-swatch.options-large")
-            color_elements = color_container.find_elements(By.CSS_SELECTOR, "a.options-color")
-            image_link = [element.get_attribute("style") for element in color_elements]
-
-            for i in range(len(color_elements)):
-
-                if len(color_elements) == 1:
-                    match_color = re.search(r'\d{4,}', description)
-                    if match_color:
-                        description = description[:match_color.end()]
-
-                color_elements[i].click()
-                price_tt = driver.find_elements(By.CSS_SELECTOR, ".tt-price > span")
-
-                price = price_tt[0].text.replace("$", "").replace("RM","").strip()
-
-                sku = driver.find_element(By.CSS_SELECTOR, "span.sku-js").text
-
-                sku_description = sku.replace("SKU:", "").strip()
-                size = re.search("-\d{1,2}", sku_description)
-
-                sku_description = sku_description[:size.start()]
-                description_sku = description + " - " + sku_description
-                description_sku = description_sku.replace("Slip Ins", "Slip-Ins").replace("Men Go Consistent On The Go",
-                                                                                          "Men On-The-GO GO Consistent").replace(
-                    "Gowalk", "GOwalk").replace("Usa", "USA").replace("Bobs", "BOBS").replace("Go Pickleball",
-                                                                                              "GO Pickleball").replace(
-                    "Dc Collection", "DC Collection").replace("Arch FIt", "Arch Fit").replace("Dc Justice",
-                                                                                              "DC Justice").replace(
-                    "On The Go Go", "On-The-GO GO").replace("Skech Air", "Skech-Air").replace("Skech Lite",
-                                                                                              "Skech-Lite").replace(
-                    "Dlites", "D'Lites").replace("Dlux", "D'Lux").replace("On The Go", "On-The-GO").replace("Dc Comics","DC Comics").replace("Tres Air","Tres-Air")
-                description_lower = description_sku.lower()
-                index_skechers = description_lower.find("skechers", 10)
-                if index_skechers != -1:
-                    description_sku = description_sku[:index_skechers] + "SKECHERS" + description_sku[
-                                                                                      index_skechers + len("skechers"):]
-
-                description_list.append(description_sku)
-                price_list.append(price)
-                link_list.append(link)
-
-                if not os.path.isfile(f"{path}/{description_sku}.jpg"):
-                    url = re.findall(url_regex, image_link[i])[0][0].replace("100x", "332x")
-                    response = requests.get(f"https://{url}")
-                    with open(f'{path}/{description_sku}.jpg', 'wb') as file:
-                        file.write(response.content)
-
+            try:
                 color_container = driver.find_element(By.CSS_SELECTOR, "ul.tt-options-swatch.options-large")
                 color_elements = color_container.find_elements(By.CSS_SELECTOR, "a.options-color")
+                image_link = [element.get_attribute("style") for element in color_elements]
+
+                for i in range(len(color_elements)):
+
+                    if len(color_elements) == 1:
+                        match_color = re.search(r'\d{4,}', description)
+                        if match_color:
+                            description = description[:match_color.end()]
+
+                    color_elements[i].click()
+                    price_tt = driver.find_elements(By.CSS_SELECTOR, ".tt-price > span")
+
+                    price = price_tt[0].text.replace("$", "").replace("RM","").strip()
+
+                    sku = driver.find_element(By.CSS_SELECTOR, "span.sku-js").text
+
+                    sku_description = sku.replace("SKU:", "").strip()
+                    size = re.search("-\d{1,2}", sku_description)
+
+                    sku_description = sku_description[:size.start()]
+                    description_sku = description + " - " + sku_description
+                    description_sku = description_sku.replace("Slip Ins", "Slip-Ins").replace("Men Go Consistent On The Go",
+                                                                                              "Men On-The-GO GO Consistent").replace(
+                        "Gowalk", "GOwalk").replace("Usa", "USA").replace("Bobs", "BOBS").replace("Go Pickleball",
+                                                                                                  "GO Pickleball").replace(
+                        "Dc Collection", "DC Collection").replace("Arch FIt", "Arch Fit").replace("Dc Justice",
+                                                                                                  "DC Justice").replace(
+                        "On The Go Go", "On-The-GO GO").replace("Skech Air", "Skech-Air").replace("Skech Lite",
+                                                                                                  "Skech-Lite").replace(
+                        "Dlites", "D'Lites").replace("Dlux", "D'Lux").replace("On The Go", "On-The-GO").replace("Dc Comics","DC Comics").replace("Tres Air","Tres-Air")
+                    description_lower = description_sku.lower()
+                    index_skechers = description_lower.find("skechers", 10)
+                    if index_skechers != -1:
+                        description_sku = description_sku[:index_skechers] + "SKECHERS" + description_sku[
+                                                                                          index_skechers + len("skechers"):]
+
+                    description_list.append(description_sku)
+                    price_list.append(price)
+                    link_list.append(link)
+
+                    if not os.path.isfile(f"{path}/{description_sku}.jpg"):
+                        url = re.findall(url_regex, image_link[i])[0][0].replace("100x", "332x")
+                        response = requests.get(f"https://{url}")
+                        with open(f'{path}/{description_sku}.jpg', 'wb') as file:
+                            file.write(response.content)
+
+                    color_container = driver.find_element(By.CSS_SELECTOR, "ul.tt-options-swatch.options-large")
+                    color_elements = color_container.find_elements(By.CSS_SELECTOR, "a.options-color")
+            except NoSuchElementException:
+                pass
 
         date = [today_date] * len(description_list)
         data_dict = {
