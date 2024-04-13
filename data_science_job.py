@@ -120,7 +120,7 @@ class Job_info():
                     company_name_list.append(
                         driver.find_element(By.CSS_SELECTOR,'[data-automation ="advertiser-name"]').text)
 
-                    job_details = driver.find_element(By.CSS_SELECTOR,"div.y735df0._1iz8dgs6y>div.y735df0._1akoxc50._1akoxc56")
+                    job_details = driver.find_element(By.CSS_SELECTOR,"div.y735df0._1iz8dgs6y>div.y735df0._1akoxc50._1akoxc57")
                     job_details = job_details.find_elements(By.CSS_SELECTOR,"div")
                     country_location_list.append(job_details[0].text)
 
@@ -143,7 +143,7 @@ class Job_info():
                     #                                   "//div[@class = 'z1s6m00 _1hbhsw6r pmwfa50 pmwfa57' and contains(., 'Years of Experience')]/div/div/div")
                     job_type = job_details[2].text
                     job_specialization = job_details[1].text
-                    posted_date_list.append(driver.find_element(By.CSS_SELECTOR,"div.y735df0._1iz8dgs6y >span.y735df0._1iz8dgs4y._94v4w0._94v4w1._94v4w22._1wzghjf4._94v4wa").text)
+                    posted_date_list.append(driver.find_element(By.CSS_SELECTOR,"div.y735df0._1iz8dgs6y >span.y735df0._1iz8dgs4y._94v4w0._94v4w1._94v4w22._1wzghjf4._94v4w7").text)
 
                     # detail = [
                         #career_level, qualification, experience,
