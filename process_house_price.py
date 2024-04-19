@@ -2,7 +2,7 @@ import pandas as pd
 import json
 import os
 from datetime import datetime
-
+from datetime import timedelta
 
 class ProcessHousePrice:
     def __init__(self, path, city):
@@ -174,9 +174,9 @@ class ProcessHousePrice:
         price_df["Date"] = pd.to_datetime(price_df["Date"], dayfirst=True, format="mixed")
 
         if len(current_process_data) != 0:
-            current_datetime = datetime.now()
-            today_date = current_datetime.date()
-            price_df = price_df.query("Date == @today_date")
+            process_datetime = current_process_data["Date"].iloc[-1] + timedelta(days=1)
+            process_date = process_datetime.date()
+            price_df = price_df.query("Date >= @process_date")
         price_df.dropna(subset=["Size (sq.ft)", "Number of bathroom", "Number of bedroom"], inplace=True)
         price_df = price_df[price_df["Title"] != "Property Wanted"]
         price_df = price_df[price_df["Size (sq.ft)"] != ""]
