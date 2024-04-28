@@ -9,7 +9,7 @@ class ProcessData:
     def __init__(self, path, country):
         self.path = path
         self.country = country
-        self.i =0;
+        self.i = 0;
 
     def check_relevant_job(self, detail):
         key_words = ["data", "data analyst", "machine learning", "ai", "artificial intelligence",
@@ -105,10 +105,9 @@ class ProcessData:
         job_df["Date"] = pd.to_datetime(job_df["Date"], dayfirst=True)
 
         if len(current_process_data) != 0:
-            current_datetime = datetime.now()
-            today_date = current_datetime.date()
-
-            job_df = job_df.query("Date == @today_date")
+            last_process_date = current_process_data.loc[len(current_process_data)-1, "Date"]
+            print(last_process_date)
+            job_df = job_df.query("Date > @last_process_date")
 
         job_df.dropna(subset=["Title"], inplace=True)
 
@@ -125,11 +124,11 @@ class ProcessData:
             ind = posted_date.find("ago")
 
             if ind != -1:
-                if posted_date[ind-1] == "+":
+                if posted_date[ind - 1] == "+":
                     job_df.loc[index, "Posted Date"] = row["Date"] - pd.Timedelta(days=30)
                 elif posted_date[ind - 1] != "d":
                     job_df.loc[index, "Posted Date"] = row["Date"]
-                elif posted_date[ind-1] == "+":
+                elif posted_date[ind - 1] == "+":
                     job_df.loc[index, "Posted Date"] = row["Date"] - pd.Timedelta(days=30)
                 else:
                     index_d = posted_date.find("dago")
@@ -160,4 +159,3 @@ class ProcessData:
         job_df.drop_duplicates(subset=["Title", "Company Name", "Job Description"], inplace=True)
         job_df.to_csv(f"{self.path}{self.country} Job(Processed).csv", index=False)
 
-        return job_df

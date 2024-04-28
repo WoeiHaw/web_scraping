@@ -18,7 +18,7 @@ class Job_info():
         self.options = webdriver.ChromeOptions()
         driver = webdriver.Chrome(service=self.service, options=self.options)
 
-        for page in range(1, 32):
+        for page in range(1, 2):
 
             # if page % 10 == 0:
             #     driver.quit()
@@ -61,7 +61,6 @@ class Job_info():
         index = filename.find(country_name)
         path = filename[:index]
 
-        print(path)
         ProcessData(path, country_name).process_data()
 
     def sg_job_page(self, page, jobid_list, country, driver):
@@ -120,59 +119,37 @@ class Job_info():
                     company_name_list.append(
                         driver.find_element(By.CSS_SELECTOR,'[data-automation ="advertiser-name"]').text)
 
-                    job_details = driver.find_element(By.CSS_SELECTOR,"div.y735df0._1iz8dgs6y>div.y735df0._1akoxc50._1akoxc57")
-                    job_details = job_details.find_elements(By.CSS_SELECTOR,"div")
-                    country_location_list.append(job_details[0].text)
+                    job_info = driver.find_element(By.CSS_SELECTOR,"div.y735df0._1iz8dgs6y>div.y735df0._1akoxc50._1akoxc57")
+                    job_full_information = job_info.find_elements(By.CSS_SELECTOR,"div")
 
-                    # if len(job_details) > 2:
-                    #     salary_list.append(job_details[1].text)
-                    #     posted_date_list.append(job_details[2].text)
-                    # elif len(job_details) == 2:
-                    #     salary_list.append(' ')
-                    #     posted_date_list.append(job_details[1].text)
-                    # else:
-                    #     salary_list.append(' ')
-                    #     posted_date_list.append(' ')
+                    job_details = job_full_information[0].find_elements(By.CSS_SELECTOR,"div>div")
 
-                    # career_level = driver.find_elements(By.XPATH,
-                    #                                     "//div[@class = 'z1s6m00 _1hbhsw6r pmwfa50 pmwfa57' and contains(., 'Career Level')]/div/div/div")
+                    country_location_list.append(job_details[1].text)
 
-                    # qualification = driver.find_elements(By.XPATH,
-                    #                                      "//div[@class = 'z1s6m00 _1hbhsw6r pmwfa50 pmwfa57' and contains(., 'Qualification')]/div/div/div")
-                    # experience = driver.find_elements(By.XPATH,
-                    #                                   "//div[@class = 'z1s6m00 _1hbhsw6r pmwfa50 pmwfa57' and contains(., 'Years of Experience')]/div/div/div")
-                    job_type = job_details[2].text
-                    job_specialization = job_details[1].text
-                    posted_date_list.append(driver.find_element(By.CSS_SELECTOR,"div.y735df0._1iz8dgs6y >span.y735df0._1iz8dgs4y._94v4w0._94v4w1._94v4w22._1wzghjf4._94v4w7").text)
 
-                    # detail = [
-                        #career_level, qualification, experience,
-                        # job_type, job_specialization]
+                    job_type = job_details[3].text
+                    job_specialization = job_details[2].text
+                    posted_date_list.append(job_full_information[-1].text.strip())
+
+
                     if len(job_details) == 5:
                         salary_list.append(job_details[4].text)
                     else:
                         salary_list.append(' ')
-                    # detail_list = [
-                                    # career_level_list, qualification_list, experience_list,
+
                     job_type_list.append(job_type)
                     job_specialization_list.append(job_specialization)
 
-                    # for i in range(len(detail)):
-                    #     if len(detail[i]) == 0:
-                    #         detail_list[i].append(" ")
-                    #     else:
-                    #         detail_list[i].append(detail[i][1].text)
+
                     saved_link.append(link)
-                    # index1_jobid = link.find("jobId")
-                    # index2_jobid = link.find("sectionRank", index1_jobid)
-                    # job_id_list.append(link[index1_jobid:index2_jobid - 1])
+
                     index = link.find("job/")
                     index2 = link.find("?", index)
                     job_id_list.append(link[index + 4:index2])
-
                     break
                 except Exception as error:
                     print(f"Error in getting job info\n{error}")
+
 
             today_date_list = [TODAY_DATE] * len(posted_date_list)
             data_dict = {"Date": today_date_list, "Posted Date": posted_date_list, "Title": job_title_list,
