@@ -106,7 +106,6 @@ class ProcessData:
 
         if len(current_process_data) != 0:
             last_process_date = current_process_data.loc[len(current_process_data)-1, "Date"]
-            print(last_process_date)
             job_df = job_df.query("Date > @last_process_date")
 
         job_df.dropna(subset=["Title"], inplace=True)

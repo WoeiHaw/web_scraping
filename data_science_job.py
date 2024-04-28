@@ -18,7 +18,7 @@ class Job_info():
         self.options = webdriver.ChromeOptions()
         driver = webdriver.Chrome(service=self.service, options=self.options)
 
-        for page in range(1, 2):
+        for page in range(1, 32):
 
             # if page % 10 == 0:
             #     driver.quit()
