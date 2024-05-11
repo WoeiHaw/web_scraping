@@ -8,6 +8,7 @@ from read_csv import Read_csv
 from save_data import Save_data
 from selenium.common.exceptions import NoSuchWindowException, WebDriverException
 from process_job_data import ProcessData
+
 now = datetime.now()
 TODAY_DATE = now.strftime("%d-%m-%Y")
 
@@ -38,7 +39,7 @@ class Job_info():
                     driver = webdriver.Chrome(service=self.service, options=self.options)
 
                 except Exception as error:
-                    print(f"Error in get_house\n{error}")
+                    print(f"Error in get_job\n{error}")
 
             for i in range(10):
                 try:
@@ -50,11 +51,10 @@ class Job_info():
                     driver = webdriver.Chrome(service=self.service, options=self.options)
 
                 except Exception as error:
-                    print(f"Error in get_house\n{error}")
+                    print(f"Error in get_job\n{error}")
 
             if len(job_info_dict) != 0:
                 Save_data(filename, job_info_dict, True)
-
 
         driver.quit()
         country_name = "Singapore" if country == "sg" else "Malaysia"
@@ -67,6 +67,7 @@ class Job_info():
 
         # driver = webdriver.Chrome(service=self.service, options=self.options)
         driver.get(f"https://www.jobstreet.com.{country}/data-science-jobs?page={page}")
+
         time.sleep(4)
         links = driver.find_elements(By.CSS_SELECTOR, '[data-automation="job-list-view-job-link"]')
         links_list = [link.get_attribute('href') for link in links]
@@ -117,29 +118,25 @@ class Job_info():
                     job_description_list.append(
                         driver.find_element(By.XPATH, '//div[@data-automation="jobAdDetails"]').text)
                     company_name_list.append(
-                        driver.find_element(By.CSS_SELECTOR,'[data-automation ="advertiser-name"]').text)
+                        driver.find_element(By.CSS_SELECTOR, '[data-automation ="advertiser-name"]').text)
 
-                    job_info = driver.find_element(By.CSS_SELECTOR,"div.y735df0._1iz8dgs6y>div.y735df0._1akoxc50._1akoxc57")
-                    job_full_information = job_info.find_elements(By.CSS_SELECTOR,"div")
+                    job_info = driver.find_element(By.CSS_SELECTOR,
+                                                   "div.y735df0._1iz8dgs6y>div.y735df0._1akoxc50._1akoxc57")
+                    job_full_information = job_info.find_elements(By.CSS_SELECTOR, "div")
+                    country_location_list.append(
+                        driver.find_element(By.CSS_SELECTOR, "span[data-automation='job-detail-location']").text)
 
-                    job_details = job_full_information[0].find_elements(By.CSS_SELECTOR,"div>div")
-
-                    country_location_list.append(job_details[1].text)
-
-
-                    job_type = job_details[3].text
-                    job_specialization = job_details[2].text
+                    job_type = driver.find_element(By.CSS_SELECTOR, "span[data-automation='job-detail-work-type']").text
+                    job_specialization = driver.find_element(By.CSS_SELECTOR, "span[data-automation='job-detail-classifications']").text
                     posted_date_list.append(job_full_information[-1].text.strip())
 
-
-                    if len(job_details) == 5:
-                        salary_list.append(job_details[4].text)
-                    else:
+                    try:
+                        salary_list.append(driver.find_element(By.CSS_SELECTOR, "span[data-automation='job-detail-salary']").text)
+                    except:
                         salary_list.append(' ')
 
                     job_type_list.append(job_type)
                     job_specialization_list.append(job_specialization)
-
 
                     saved_link.append(link)
 
@@ -150,14 +147,13 @@ class Job_info():
                 except Exception as error:
                     print(f"Error in getting job info\n{error}")
 
-
             today_date_list = [TODAY_DATE] * len(posted_date_list)
             data_dict = {"Date": today_date_list, "Posted Date": posted_date_list, "Title": job_title_list,
                          "Company Name": company_name_list, "Salary": salary_list,
                          "Country/Location": country_location_list,
-                         "Career Level": [""]*len(posted_date_list),
-                         "Qualification Requirement": [""]*len(posted_date_list),
-                         "Experience Requirement": [""]*len(posted_date_list),
+                         "Career Level": [""] * len(posted_date_list),
+                         "Qualification Requirement": [""] * len(posted_date_list),
+                         "Experience Requirement": [""] * len(posted_date_list),
                          "Job Type": job_type_list, "Job Specializations": job_specialization_list,
                          "Job Description": job_description_list, "Link": saved_link, "Job ID": job_id_list}
         return data_dict
