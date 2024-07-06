@@ -128,7 +128,9 @@ class Job_info():
 
                     job_type = driver.find_element(By.CSS_SELECTOR, "span[data-automation='job-detail-work-type']").text
                     job_specialization = driver.find_element(By.CSS_SELECTOR, "span[data-automation='job-detail-classifications']").text
-                    posted_date_list.append(job_full_information[-1].text.strip())
+                    posted_date = driver.find_element(By.XPATH,"//span[contains(text(), 'Posted')]").text.strip()
+                    print(posted_date)
+                    posted_date_list.append(posted_date)
 
                     try:
                         salary_list.append(driver.find_element(By.CSS_SELECTOR, "span[data-automation='job-detail-salary']").text)
