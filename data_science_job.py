@@ -120,9 +120,9 @@ class Job_info():
                     company_name_list.append(
                         driver.find_element(By.CSS_SELECTOR, '[data-automation ="advertiser-name"]').text)
 
-                    job_info = driver.find_element(By.CSS_SELECTOR,
-                                                   "div.y735df0._1iz8dgs6y>div.y735df0._1akoxc50._1akoxc57")
-                    job_full_information = job_info.find_elements(By.CSS_SELECTOR, "div")
+                    # job_info = driver.find_element(By.CSS_SELECTOR,
+                    #                                "div.y735df0._1iz8dgs6y>div.y735df0._1akoxc50._1akoxc57")
+                    # job_full_information = job_info.find_elements(By.CSS_SELECTOR, "div")
                     country_location_list.append(
                         driver.find_element(By.CSS_SELECTOR, "span[data-automation='job-detail-location']").text)
 
