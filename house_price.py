@@ -34,8 +34,7 @@ def get_house(page, link_list, place, driver):
 
 
 def get_house_info(link, driver):
-    driver.get(
-        "https://www.mudah.my/7-acre-super-strategic-land-jalan-puchong-old-klang-road-kuala-lumpur-107584171.htm")
+    driver.get(link)
 
     time.sleep(5)
 
