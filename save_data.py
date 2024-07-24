@@ -59,7 +59,7 @@ class Save_data():
             link_df.to_csv(f"data/{filename[-6:-4]} Skechers Link.csv",index = False)
         else:
             try:
-                data = pd.read_csv(filename)
+                data = pd.read_csv(filename,encoding="utf-8",encoding_errors="ignore")
 
                 new_data = pd.DataFrame(data_save_dict)
 

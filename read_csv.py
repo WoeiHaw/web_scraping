@@ -4,7 +4,7 @@ import pandas as pd
 class Read_csv():
     def __init__(self, filename):
         try:
-            self.data = pd.read_csv(f"{filename}")
+            self.data = pd.read_csv(f"{filename}", encoding='utf-8', encoding_errors='ignore')
         except FileNotFoundError:
             self.data = pd.DataFrame()
 
