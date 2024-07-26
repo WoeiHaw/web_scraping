@@ -71,6 +71,7 @@ class Shoes():
 
             driver.get(link)
             time.sleep(2)
+            driver.get(link)
             # description = driver.find_element(By.TAG_NAME, "h1").text
 
             description = link[link.find("products/") + 9:].replace("-", " ").title().strip()
@@ -138,6 +139,7 @@ class Shoes():
                     color_elements = color_container.find_elements(By.CSS_SELECTOR, "a.options-color")
             except NoSuchElementException:
                 pass
+
 
         date = [today_date] * len(description_list)
         data_dict = {
