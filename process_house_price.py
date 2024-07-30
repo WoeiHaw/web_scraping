@@ -194,7 +194,7 @@ class ProcessHousePrice:
 
         price_df.drop(price_df[price_df["Number of bathroom"] == "-"].index, inplace=True)
         price_df["Number of bathroom"] = price_df["Number of bathroom"].apply(
-            lambda x: 10 if x == "More than 10" else int(x))
+            lambda x: 10 if x == "More than 10" else 10 if x == "10+" else int(x))
 
         price_df["Number of bedroom"] = price_df["Number of bedroom"].apply(
             lambda x: 0 if (len(x) > 5) | (x == "-") else x)
