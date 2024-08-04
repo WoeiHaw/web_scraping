@@ -4,6 +4,7 @@ import os
 from datetime import datetime
 from datetime import timedelta
 
+
 class ProcessHousePrice:
     def __init__(self, path, city):
         self.path = path
@@ -194,12 +195,12 @@ class ProcessHousePrice:
 
         price_df.drop(price_df[price_df["Number of bathroom"] == "-"].index, inplace=True)
         price_df["Number of bathroom"] = price_df["Number of bathroom"].apply(
-            lambda x: 10 if x == "More than 10" else int(x))
+            lambda x: 10 if x == "More than 10" else 10 if x == "10+" else int(x))
 
         price_df["Number of bedroom"] = price_df["Number of bedroom"].apply(
             lambda x: 0 if (len(x) > 5) | (x == "-") else x)
         price_df["Number of bedroom"] = price_df["Number of bedroom"].apply(
-            lambda x: 10 if x == "More than 10" else int(float(x)))
+            lambda x: 10 if x == "More than 10" else 10 if x == "10+" else int(float(x)))
         price_df.drop(price_df[price_df["Number of bedroom"] == 0].index, inplace=True)
 
         if self.city == "JB":
