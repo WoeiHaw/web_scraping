@@ -79,11 +79,11 @@ class Shoes():
                     description = link[link.find("products/") + 9:].replace("-", " ").title().strip()
                     description = description.replace("Gorun", "GOrun")
 
-                    match = re.search("\d{4,}", description)
+                    match = re.search(r"\d{4,}", description)
                     description = description[:match.start()].strip()
 
                     # to add decimal for example  7 0 become 7.0
-                    match_decimal = re.search("\d \d", description)
+                    match_decimal = re.search(r"\d \d", description)
                     if match_decimal:
                         description = description[:match_decimal.start() + 1] + "." + description[
                                                                                       match_decimal.start() + 2:]
@@ -107,7 +107,7 @@ class Shoes():
                         sku = driver.find_element(By.CSS_SELECTOR, "span.sku-js").text
 
                         sku_description = sku.replace("SKU:", "").strip()
-                        size = re.search("-\d{1,2}", sku_description)
+                        size = re.search(r"-\d{1,2}", sku_description)
 
                         sku_description = sku_description[:size.start()]
                         description_sku = description + " - " + sku_description
