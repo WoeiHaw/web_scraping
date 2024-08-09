@@ -40,7 +40,7 @@ def get_house_info(link, driver):
 
     title = driver.find_elements(By.XPATH, "//div[div/h2]/p")[0].text
 
-    house_value = (driver.find_elements(By.CSS_SELECTOR, "h1>span")[0]
+    house_value = (driver.find_elements(By.CSS_SELECTOR, "h2>span")[0]
                    .text.replace("RM", "").replace(",", "").strip())
 
     property_type = driver.find_elements(By.XPATH, "//div[p[contains(text(), 'Property Type')]]/p")[1].text
@@ -48,6 +48,7 @@ def get_house_info(link, driver):
     property_info = driver.find_elements(By.CSS_SELECTOR,
                                          "div.Box-bx23rg-0.Flex-sc-9pwi7j-0.style__BottomWrapper-iwjn3z-3.dylTuM >"
                                          "div")
+
     if len(property_info) == 0:
         size = "0"
         bedroom = "0"
