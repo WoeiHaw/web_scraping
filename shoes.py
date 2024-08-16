@@ -24,10 +24,21 @@ class Shoes():
             # Save_data(filename, data_save_dict, check.is_today_empty)
             url = f"https://www.skechers.com.{place}/collections/men-shoes"
             driver = webdriver.Chrome(service=self.service, options=self.options)
-            driver.get(url)
 
-            page_elements = driver.find_elements(By.CSS_SELECTOR, ".tt-pagination >ul>li")
-            last_page = int(page_elements[-1].text)
+            try:
+                driver.get(url)
+            except:
+                driver.get(url)
+
+            try:
+                page_elements = driver.find_elements(By.CSS_SELECTOR, ".pagination-inner-pages > li")
+                last_page_text = page_elements[-1].text.replace("page","").strip()
+            except:
+                page_elements = driver.find_elements(By.CSS_SELECTOR, "a.pagination-page-url")
+                last_page_text = page_elements[-1].text.replace("page", "").strip()
+
+
+            last_page = int(last_page_text)
 
             shoes_data = {
                 "Date": [],
@@ -36,6 +47,7 @@ class Shoes():
                 "Link": []
             }
             for i in range(1, last_page + 1):
+                driver.get(f"{url}?page={i}")
                 driver.get(f"{url}?page={i}")
                 new_data = self.get_shoes(driver, place)
                 shoes_data["Date"] = shoes_data["Date"] + new_data["Date"]
