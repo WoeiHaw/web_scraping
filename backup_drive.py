@@ -1,7 +1,7 @@
 import os
 
-from pydrive.auth import GoogleAuth
-from pydrive.drive import GoogleDrive
+from pydrive2.auth import GoogleAuth
+from pydrive2.drive import GoogleDrive
 
 
 class Backup_drive():
@@ -11,11 +11,12 @@ class Backup_drive():
         gauth.LocalWebserverAuth()
         drive = GoogleDrive(gauth)
 
+
         fileName = ["Darlie Toothpaste", "Dettol Shower Gel", "House Price JB", "House Price kl",
                     "kopi o price", "Malaysia Job", "Nivea Man", "sg rental",
-                    "shampoo price", "Singapore Job", "skechers_shoes_MY", "skechers_shoes_SG", "sg rental(processed)",
+                    "shampoo price", "skechers_shoes_MY", "skechers_shoes_SG", "sg rental(processed)",
                     "Singapore Job(Processed)", "Malaysia Job(Processed)", "House Price kl(Processed)",
-                    "House Price JB(Processed)","MY Skechers Link","SG Skechers Link"]
+                    "House Price JB(Processed)", "MY Skechers Link", "SG Skechers Link","Singapore Job"]
         folder_list = drive.ListFile(
             {
                 'q': "title='Data_back_up'  and mimeType='application/vnd.google-apps.folder' and trashed=false"}).GetList()
@@ -43,6 +44,8 @@ class Backup_drive():
         # memory leak, therefore preventing its
         # deletion
         f = None
+
+
 
         assets_folder_list = drive.ListFile(
             {

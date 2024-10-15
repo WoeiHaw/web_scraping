@@ -96,14 +96,20 @@ class Job_info():
         job_description_list = []
         company_name_list = []
         posted_date_list = []
-        # career_level_list = []
-        # qualification_list = []
-        # experience_list = []
         job_type_list = []
         job_specialization_list = []
         saved_link = []
         salary_list = []
         job_id_list = []
+
+        job_title = ""
+        country_location = ""
+        job_description = ""
+        company_name = ""
+        job_type = ""
+        job_specialization = ""
+        salary = ""
+
 
         for link in checked_link_list:
             for i in range(10):
@@ -113,40 +119,44 @@ class Job_info():
 
                     time.sleep(4)
 
-                    job_title_list.append(driver.find_element(By.TAG_NAME, "h1").text)
+                    job_title = driver.find_element(By.TAG_NAME, "h1").text
 
-                    job_description_list.append(
-                        driver.find_element(By.XPATH, '//div[@data-automation="jobAdDetails"]').text)
-                    company_name_list.append(
-                        driver.find_element(By.CSS_SELECTOR, '[data-automation ="advertiser-name"]').text)
+                    job_description = driver.find_element(By.XPATH, '//div[@data-automation="jobAdDetails"]').text
 
-                    # job_info = driver.find_element(By.CSS_SELECTOR,
-                    #                                "div.y735df0._1iz8dgs6y>div.y735df0._1akoxc50._1akoxc57")
-                    # job_full_information = job_info.find_elements(By.CSS_SELECTOR, "div")
-                    country_location_list.append(
-                        driver.find_element(By.CSS_SELECTOR, "span[data-automation='job-detail-location']").text)
+
+                    company_name = driver.find_element(By.CSS_SELECTOR, '[data-automation ="advertiser-name"]').text
+
+
+                    country_location = driver.find_element(By.CSS_SELECTOR,
+                                                           "span[data-automation='job-detail-location']").text
 
                     job_type = driver.find_element(By.CSS_SELECTOR, "span[data-automation='job-detail-work-type']").text
-                    job_specialization = driver.find_element(By.CSS_SELECTOR, "span[data-automation='job-detail-classifications']").text
-                    posted_date = driver.find_element(By.XPATH,"//span[contains(text(), 'Posted')]").text.strip()
+                    job_specialization = driver.find_element(By.CSS_SELECTOR,
+                                                             "span[data-automation='job-detail-classifications']").text
+                    posted_date = driver.find_element(By.XPATH, "//span[contains(text(), 'Posted')]").text.strip()
                     posted_date_list.append(posted_date)
 
                     try:
-                        salary_list.append(driver.find_element(By.CSS_SELECTOR, "span[data-automation='job-detail-salary']").text)
+                        salary =driver.find_element(By.CSS_SELECTOR, "span[data-automation='job-detail-salary']").text
+
                     except:
-                        salary_list.append(' ')
-
-                    job_type_list.append(job_type)
-                    job_specialization_list.append(job_specialization)
-
-                    saved_link.append(link)
-
-                    index = link.find("job/")
-                    index2 = link.find("?", index)
-                    job_id_list.append(link[index + 4:index2])
+                        salary = ""
                     break
                 except Exception as error:
                     print(f"Error in getting job info\n{error}")
+
+            job_title_list.append(job_title)
+            job_description_list.append(job_description)
+            country_location_list.append(country_location)
+            job_type_list.append(job_type)
+            job_specialization_list.append(job_specialization)
+            company_name_list.append(company_name)
+            saved_link.append(link)
+            salary_list.append(salary)
+
+            index = link.find("job/")
+            index2 = link.find("?", index)
+            job_id_list.append(link[index + 4:index2])
 
             today_date_list = [TODAY_DATE] * len(posted_date_list)
             data_dict = {"Date": today_date_list, "Posted Date": posted_date_list, "Title": job_title_list,

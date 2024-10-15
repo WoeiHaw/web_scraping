@@ -29,13 +29,8 @@ class Shoes():
                 driver.get(url)
             except:
                 driver.get(url)
-
-            try:
-                page_elements = driver.find_elements(By.CSS_SELECTOR, ".pagination-inner-pages > li")
-                last_page_text = page_elements[-1].text.replace("page","").strip()
-            except:
-                page_elements = driver.find_elements(By.CSS_SELECTOR, "a.pagination-page-url")
-                last_page_text = page_elements[-1].text.replace("page", "").strip()
+            page_elements = driver.find_elements(By.CSS_SELECTOR, ".tt-pagination >ul > li")
+            last_page_text = page_elements[-1].text.replace("page", "").strip()
 
 
             last_page = int(last_page_text)
@@ -156,7 +151,7 @@ class Shoes():
                         color_elements = color_container.find_elements(By.CSS_SELECTOR, "a.options-color")
                     break
 
-                except :
+                except:
                     pass
 
         date = [today_date] * len(description_list)
