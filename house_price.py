@@ -21,7 +21,7 @@ def get_house(page, link_list, place, driver):
 
     driver.get(f"https://www.mudah.my/malaysia/properties-for-sale?o={page}&q={place}")
     time.sleep(3)
-    house_item = driver.find_elements(By.XPATH, "//*[starts-with(@data-testid,'listing-ad-item-')]")
+    house_item = driver.find_elements(By.CSS_SELECTOR, ".Card__CardContainer-sc-11o95rz-0.etPCUE")
 
     house_link_tags = [item.find_element(By.TAG_NAME, "a") for item in house_item]
 
@@ -84,7 +84,6 @@ def get_house_info(link, driver):
         "link": link,
         "Price": house_value
     }
-
     return data_dict
 
 
